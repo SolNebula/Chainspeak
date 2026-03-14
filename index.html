@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversation Drill — Korean & Chinese</title>
+
+<!--
+  ╔═══════════════════════════════════════════════════════════════╗
+  ║  CONVERSATION DRILL — Korean & Chinese                       ║
+  ║                                                               ║
+  ║  A conversation-first language learning app built around a    ║
+  ║  4-beat conversational cycle:                                 ║
+  ║                                                               ║
+  ║    Beat 1: STATEMENT   — self-disclosure / answer bridge Q    ║
+  ║    Beat 2: ASK         — open-ended question about the topic  ║
+  ║    Beat 3: ECHO        — confirm/verify what you heard        ║
+  ║    Beat 4: BRIDGE      — react + ask question → next rep      ║
+  ║                                                               ║
+  ║  Adapted from Tony Marsh's 1·2·3 Cups method, restructured   ║
+  ║  to match how Korean and Chinese conversations naturally      ║
+  ║  flow: Statement → Open Q → Confirmation → Elaboration.      ║
+  ║                                                               ║
+  ║  7 weeks. 18 reps (+ review). One continuous conversation     ║
+  ║  arc from strangers → friends.                                ║
+  ║                                                               ║
+  ║  TABS:                                                        ║
+  ║    1. Weekly Drills — the 4-beat conversation exercises        ║
+  ║    2. Verb Seeds   — conjugation reference for 12 core verbs  ║
+  ╚═══════════════════════════════════════════════════════════════╝
+
+  FONTS:
+    - Noto Serif KR: Korean characters
+    - Noto Serif SC: Simplified Chinese characters
+    - Playfair Display: English UI text (headings, buttons, labels)
+-->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Noto+Serif+SC:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  /* ─────────────────────────────────────────────
+     COLOR PALETTE
+     All colors defined as CSS variables for
+     consistent reuse throughout the app.
+
+     Base palette (editorial/refined aesthetic):
+       navy  → primary text, active states, headings
+       teal  → secondary text, labels, muted accents
+       sky   → card headers, vocab boxes, light bgs
+       beige → page background
+       white → card surfaces, nav bar
+
+     Beat tag colors (one per beat type):
+       b1 (Statement) → green
+       b2 (Ask)       → blue
+       b3 (Echo)      → amber/orange
+       b4 (Bridge)    → purple
+
+     Review week uses the drill-* palette (amber)
+     to visually distinguish it from content weeks.
+  ───────────────────────────────────────────── */
+  :root {
+    --navy:   #2F4156;
+    --teal:   #567C8D;
+    --sky:    #C8D9E6;
+    --beige:  #F5EFEB;
+    --white:  #FFFFFF;
+    --bg:     var(--beige);
+    --surface: var(--white);
+    --border:  #d4ccc6;
+    --border2: #b8cdd9;
+    --faint:   #e4ddd8;
+
+    /* Review week (amber) */
+    --drill-bg:     #fff7ed;
+    --drill-border: #e8a04a;
+    --drill-text:   #8a4a10;
+    --drill-badge:  #c45e00;
+
+    /* Beat 1: Statement — green */
+    --b1-bg: #e8f6ee;  --b1-border: #a8dbbe; --b1-text: #2a7a4a;
+    /* Beat 2: Ask — blue */
+    --b2-bg: #e8eeff;  --b2-border: #a0b0f0; --b2-text: #3040b0;
+    /* Beat 3: Echo — amber */
+    --b3-bg: #fef3e2;  --b3-border: #f0c88a; --b3-text: #b06010;
+    /* Beat 4: Bridge — purple */
+    --b4-bg: #f3e8f6;  --b4-border: #c4a0d8; --b4-text: #6a2a8a;
+  }
+
+  /* ─── RESET ─── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'Playfair Display', Georgia, serif;
+    min-height: 100vh;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     TOP NAVIGATION BAR
+     Left: app title + subtitle
+     Right: language toggle (한국어 / Both / 中文)
+  ───────────────────────────────────────────── */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px; border-bottom: 1px solid var(--border);
+    background: var(--white); flex-wrap: wrap; gap: 12px;
+  }
+  .nav-title {
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--teal); text-transform: uppercase;
+  }
+  .nav-h { font-size: 18px; font-weight: 400; margin-top: 3px; color: var(--navy); }
+
+  /* Language toggle: pill container with 3 buttons */
+  .lang-toggle { display: flex; background: var(--sky); border-radius: 8px; padding: 3px; gap: 3px; }
+  .lang-btn {
+    padding: 5px 14px; border-radius: 6px; border: none; cursor: pointer;
+    font-family: 'Noto Serif KR', serif; font-size: 12px;
+    background: transparent; color: var(--teal); transition: all .15s;
+  }
+  .lang-btn.active { background: var(--navy); color: var(--white); }
+
+
+  /* ─────────────────────────────────────────────
+     MAIN TAB BAR
+     Switches between "Weekly Drills" and "Verb Seeds".
+     Active tab has navy underline.
+  ───────────────────────────────────────────── */
+  .tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+    background: var(--white);
+  }
+  .tab-btn {
+    padding: 13px 22px; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    background: transparent; font-family: 'Playfair Display', serif;
+    font-size: 13px; color: var(--teal); transition: all .15s;
+    margin-bottom: -1px;
+  }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+  /* Content wrapper: padding + max-width cap */
+  .content { padding: 24px 28px; max-width: 960px; }
+
+
+  /* ─────────────────────────────────────────────
+     WEEK SELECTOR STRIP
+     Horizontal scrollable row of week buttons.
+     Week 7 (Review) gets amber styling.
+  ───────────────────────────────────────────── */
+  .week-strip {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding-bottom: 16px; scrollbar-width: none;
+  }
+  .week-strip::-webkit-scrollbar { display: none; }
+
+  .week-btn {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer;
+    background: var(--white); color: var(--teal);
+    font-family: 'Playfair Display', serif; font-size: 11px;
+    text-align: center; transition: all .15s; position: relative;
+  }
+  .week-btn:hover { border-color: var(--teal); }
+  .week-btn.active {
+    background: var(--navy); color: var(--white);
+    border-color: var(--navy);
+  }
+  .week-btn .wk-num { font-weight: 700; font-size: 14px; display: block; }
+  .week-btn .wk-focus { margin-top: 2px; display: block; font-size: 10px; }
+
+  /* Week 7 review styling */
+  .week-btn.review-week {
+    border-color: var(--drill-border);
+    background: var(--drill-bg); color: var(--drill-text);
+  }
+  .week-btn.review-week.active {
+    background: var(--drill-badge); color: var(--white);
+    border-color: var(--drill-badge);
+  }
+  .review-badge {
+    display: inline-block; font-size: 8px; font-family: monospace;
+    font-weight: 700; letter-spacing: 1px; background: var(--drill-badge);
+    color: white; padding: 1px 5px; border-radius: 3px; margin-top: 3px;
+  }
+  .week-btn.active .review-badge { background: rgba(255,255,255,0.3); }
+
+
+  /* ─────────────────────────────────────────────
+     TASK BAR
+     Shows the goal/instruction for the selected week.
+     Normal weeks: navy left border.
+     Review week: amber left border + amber bg.
+  ───────────────────────────────────────────── */
+  .task-bar {
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 18px;
+    border: 1px solid var(--border); border-left-width: 3px;
+    background: var(--white);
+  }
+  .task-bar.normal { border-left-color: var(--navy); }
+  .task-bar.review { border-left-color: var(--drill-badge); background: var(--drill-bg); }
+
+  .task-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 4px; font-family: monospace;
+  }
+  .task-label.normal { color: var(--teal); }
+  .task-label.review { color: var(--drill-badge); }
+  .task-text { font-size: 14px; color: var(--navy); line-height: 1.5; }
+
+
+  /* ─────────────────────────────────────────────
+     REP CARD
+     Each card = one conversational rep.
+     Structure:
+       rep-header   ← sky bg, rep number + title + verb seed badge
+       scenario     ← italic context-setting text
+       rep-body     ← flexbox: Korean beats | Chinese beats
+       ref-toggle   ← collapsible reference conversation
+  ───────────────────────────────────────────── */
+  .rep-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-bottom: 0;
+  }
+  .rep-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--faint);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--sky);
+  }
+  .rep-header-left { display: flex; align-items: center; gap: 10px; }
+
+  /* Circular number badge */
+  .rep-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--navy); display: flex; align-items: center;
+    justify-content: center; font-size: 11px; color: var(--white);
+    font-weight: 700; flex-shrink: 0;
+  }
+  .rep-title { font-size: 13px; color: var(--navy); font-style: italic; }
+
+  /* Verb seed pill badge in header */
+  .rep-verb {
+    font-size: 10px; font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+    color: var(--teal); background: var(--white); padding: 2px 8px;
+    border-radius: 4px; border: 1px solid var(--border2);
+  }
+
+
+  /* ─────────────────────────────────────────────
+     SCENARIO BAR
+     Italic context text below the rep header.
+     Sets the scene for the active recall exercise.
+  ───────────────────────────────────────────── */
+  .scenario {
+    padding: 12px 16px; font-size: 12px; color: var(--teal);
+    line-height: 1.5; border-bottom: 1px solid var(--faint);
+    font-style: italic;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     BEAT ROWS
+     Each beat = one line of the 4-beat cycle.
+     Contains: colored tag + prompt + hint + structure + production line
+  ───────────────────────────────────────────── */
+  .rep-body { display: flex; }
+  .lang-block { flex: 1; padding: 14px 16px; }
+  .lang-block.border-right { border-right: 1px solid var(--faint); }
+  .lang-label {
+    font-size: 10px; letter-spacing: 2px; color: var(--teal);
+    text-transform: uppercase; margin-bottom: 10px;
+    font-family: monospace; opacity: .6;
+  }
+
+  .beat-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .beat-row:last-child { margin-bottom: 0; }
+
+  /* Beat type tag (STMT / ASK / ECHO / BRIDGE) */
+  .beat-tag {
+    flex-shrink: 0; width: 50px; height: 20px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700; font-family: monospace;
+    margin-top: 3px; letter-spacing: .5px;
+  }
+  .beat-tag.b1 { background: var(--b1-bg); border: 1px solid var(--b1-border); color: var(--b1-text); }
+  .beat-tag.b2 { background: var(--b2-bg); border: 1px solid var(--b2-border); color: var(--b2-text); }
+  .beat-tag.b3 { background: var(--b3-bg); border: 1px solid var(--b3-border); color: var(--b3-text); }
+  .beat-tag.b4 { background: var(--b4-bg); border: 1px solid var(--b4-border); color: var(--b4-text); }
+
+  /* Beat content elements */
+  .beat-prompt { font-size: 13px; color: var(--navy); line-height: 1.4; }
+  .beat-hint {
+    font-size: 11px; color: var(--teal); margin-top: 3px;
+    font-family: monospace; opacity: .65;
+  }
+  .beat-structure {
+    font-size: 11px; color: var(--navy); margin-top: 2px;
+    font-family: 'Noto Serif KR', 'Noto Serif SC', monospace;
+    opacity: .5; font-style: italic;
+  }
+  /* Partner response bubble (shown at Beat 3 for echo context) */
+  .beat-partner {
+    font-size: 11px; color: var(--b3-text); margin-top: 4px;
+    font-style: italic; padding: 4px 8px; background: var(--b3-bg);
+    border-radius: 4px; border: 1px solid var(--b3-border);
+    display: inline-block;
+  }
+  .beat-partner .pinyin {
+    font-family: monospace; font-size: 10px;
+    color: var(--teal); display: block; margin-top: 1px;
+  }
+  /* Dashed line where the learner writes/speaks their production */
+  .production-line {
+    margin-top: 6px; border-bottom: 1px dashed var(--border);
+    padding-bottom: 2px; font-size: 12px; color: var(--border);
+    font-style: italic; min-width: 180px;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     CHAIN ARROW
+     Visual connector between reps (↓ symbol).
+     Shows the chaining relationship.
+  ───────────────────────────────────────────── */
+  .chain-arrow {
+    text-align: center; padding: 8px 0;
+    color: var(--teal); font-size: 18px; opacity: .4;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     REFERENCE CONVERSATION TOGGLE
+     Collapsible <details> element at the bottom
+     of each rep card. Hidden by default.
+     Contains: full scripted conversation + key vocab.
+  ───────────────────────────────────────────── */
+  .ref-toggle { border-top: 1px solid var(--faint); }
+  .ref-toggle summary {
+    padding: 10px 16px; font-size: 11px; color: var(--teal);
+    cursor: pointer; font-family: monospace; letter-spacing: .5px;
+    list-style: none; display: flex; align-items: center; gap: 6px;
+  }
+  .ref-toggle summary::-webkit-details-marker { display: none; }
+  .ref-toggle summary::before { content: '▶'; font-size: 8px; transition: transform .2s; }
+  .ref-toggle[open] summary::before { transform: rotate(90deg); }
+
+  .ref-content { padding: 0 16px 14px; display: flex; gap: 0; }
+  .ref-lang { flex: 1; padding: 0; }
+  .ref-lang.border-right {
+    border-right: 1px solid var(--faint);
+    padding-right: 12px; margin-right: 12px;
+  }
+  .ref-line {
+    font-size: 12px; line-height: 1.6; color: var(--navy);
+    font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+    margin-bottom: 4px;
+  }
+  .ref-line.partner { color: var(--teal); font-style: italic; }
+  .ref-line .pinyin { font-family: monospace; font-size: 10px; color: var(--teal); opacity: .7; }
+
+  /* Key vocab section inside reference toggle */
+  .ref-vocab {
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid var(--faint);
+  }
+  .ref-vocab-title {
+    font-size: 9px; font-family: monospace; letter-spacing: 1.5px;
+    color: var(--teal); text-transform: uppercase; margin-bottom: 4px;
+  }
+  .ref-vocab-item { font-size: 11px; color: var(--navy); line-height: 1.6; }
+  .ref-vocab-item .word {
+    font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+    font-weight: 700;
+  }
+  .ref-vocab-item .meaning { color: var(--teal); margin-left: 4px; }
+
+
+  /* ─────────────────────────────────────────────
+     BRIDGE PATTERNS CARD
+     Shown at the bottom of each week's drill.
+     Lists the key conversational connectors
+     introduced that week.
+  ───────────────────────────────────────────── */
+  .bridge-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-top: 18px;
+  }
+  .bridge-header {
+    padding: 10px 16px; background: var(--b4-bg);
+    border-bottom: 1px solid var(--b4-border); font-size: 11px;
+    font-family: monospace; color: var(--b4-text);
+    letter-spacing: 1px; font-weight: 700;
+  }
+  .bridge-body { padding: 14px 16px; display: flex; gap: 0; }
+  .bridge-col { flex: 1; }
+  .bridge-col.border-right {
+    border-right: 1px solid var(--faint);
+    padding-right: 14px; margin-right: 14px;
+  }
+  .bridge-col-title {
+    font-size: 9px; font-family: monospace; letter-spacing: 1.5px;
+    color: var(--teal); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .bridge-item { font-size: 12px; line-height: 1.8; color: var(--navy); }
+  .bridge-item .pattern {
+    font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+    font-weight: 700;
+  }
+  .bridge-item .meaning { color: var(--teal); font-size: 11px; }
+
+
+  /* ─────────────────────────────────────────────
+     REVIEW WEEK BANNER
+     Amber-styled info box shown only during Week 7.
+  ───────────────────────────────────────────── */
+  .review-banner {
+    background: var(--drill-bg); border: 1px solid var(--drill-border);
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .review-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+  .review-banner-title {
+    font-size: 13px; font-weight: 700; color: var(--drill-badge);
+    margin-bottom: 3px; letter-spacing: 0.5px;
+  }
+  .review-banner-text {
+    font-size: 13px; color: var(--drill-text); line-height: 1.5;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     PROGRESS BAR
+     Thin horizontal track at the bottom of the
+     drill tab. Fills left-to-right as weeks advance.
+  ───────────────────────────────────────────── */
+  .progress-bar {
+    margin-top: 18px; display: flex; align-items: center; gap: 10px;
+  }
+  .progress-label {
+    font-size: 10px; color: var(--teal);
+    font-family: monospace; letter-spacing: 1px;
+  }
+  .progress-track {
+    flex: 1; height: 3px; background: var(--sky); border-radius: 2px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--navy); border-radius: 2px;
+    transition: width 0.35s ease;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     REVIEW CHAIN CARD (Week 7)
+     Shows the full 18-rep chain visualization
+     so the learner can see the complete arc.
+  ───────────────────────────────────────────── */
+  .chain-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-top: 12px;
+  }
+  .chain-card-header {
+    padding: 10px 16px; background: var(--sky);
+    border-bottom: 1px solid var(--faint);
+    font-size: 11px; font-family: monospace; letter-spacing: 1px;
+    color: var(--navy); font-weight: 700;
+  }
+  .chain-card-body {
+    padding: 14px 16px; font-size: 11px;
+    font-family: 'Noto Serif KR', 'Noto Serif SC', monospace;
+    color: var(--navy); line-height: 2; white-space: pre-wrap;
+  }
+  .chain-card-body .wk-label {
+    font-weight: 700; color: var(--teal);
+    font-family: monospace; font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+
+  /* ─────────────────────────────────────────────
+     VERB SEEDS TAB STYLES
+     (Preserved from original — reference tool
+     for verb conjugation patterns)
+  ───────────────────────────────────────────── */
+  .verb-buttons {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .verb-btn {
+    padding: 9px 18px; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer;
+    background: var(--white); color: var(--teal);
+    font-family: 'Playfair Display', serif; font-size: 12px;
+    transition: all .15s;
+  }
+  .verb-btn:hover { border-color: var(--teal); }
+  .verb-btn.active {
+    background: var(--navy); color: var(--white);
+    border-color: var(--navy);
+  }
+  .verb-btn .vb-chars {
+    font-weight: 700;
+    font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+  }
+  .verb-btn .vb-eng { font-size: 10px; opacity: .5; margin-left: 6px; }
+
+  /* Vocab strip */
+  .vocab-header {
+    display: flex; align-items: baseline;
+    justify-content: space-between; margin-bottom: 8px;
+  }
+  .vocab-label {
+    font-size: 10px; letter-spacing: 2px; color: var(--navy);
+    text-transform: uppercase; font-family: monospace;
+    font-weight: 700; opacity: .6;
+  }
+  .vocab-hint { font-size: 11px; color: var(--teal); font-style: italic; opacity: .7; }
+  .vocab-strip {
+    background: var(--sky); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 14px;
+    display: flex; flex-wrap: wrap; justify-content: space-evenly;
+    align-items: center; row-gap: 14px; column-gap: 8px;
+  }
+  .vocab-word {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 3px; min-width: 64px; text-align: center;
+  }
+  .vocab-kr { font-size: 14px; color: var(--navy); font-family: 'Noto Serif KR', serif; font-weight: 700; }
+  .vocab-zh { font-size: 14px; color: var(--teal); font-family: 'Noto Serif SC', serif; }
+
+  /* Tense tabs */
+  .tense-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tense-btn {
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 12px; font-family: 'Playfair Display', serif;
+    background: var(--white); color: var(--teal);
+    border: 1px solid var(--border); transition: all .15s;
+  }
+  .tense-btn.active { background: var(--teal); color: var(--white); border-color: var(--teal); }
+
+  /* Seed card (reuses set-card pattern) */
+  .set-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-bottom: 14px;
+  }
+  .set-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--faint);
+    display: flex; align-items: center; gap: 10px; background: var(--sky);
+  }
+  .set-body { display: flex; }
+  .cup-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+  .cup-row:last-child { margin-bottom: 0; }
+  .cup-tag {
+    flex-shrink: 0; width: 36px; height: 20px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; font-family: monospace; margin-top: 3px;
+  }
+  .cup-tag.s  { background: var(--b1-bg); border: 1px solid var(--b1-border); color: var(--b1-text); }
+  .cup-tag.yn { background: var(--b3-bg); border: 1px solid var(--b3-border); color: var(--b3-text); }
+  .cup-tag.q  { background: var(--b2-bg); border: 1px solid var(--b2-border); color: var(--b2-text); }
+  .cup-main {
+    font-size: 14px; color: var(--navy); line-height: 1.4;
+    font-family: 'Noto Serif KR', 'Noto Serif SC', serif;
+  }
+  .cup-note { font-size: 11px; color: var(--teal); margin-top: 2px; font-family: monospace; opacity: .6; }
+
+  /* Structure notes */
+  .struct-note {
+    margin-top: 12px; padding: 12px 16px; background: var(--sky);
+    border-radius: 8px; border: 1px solid var(--border2);
+  }
+  .struct-note-row { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; }
+  .struct-note-row:not(:last-child) { border-bottom: 1px solid var(--border2); }
+  .struct-lang-tag {
+    flex-shrink: 0; font-size: 9px; font-family: monospace;
+    font-weight: 700; letter-spacing: 1px; padding: 2px 7px;
+    border-radius: 4px; margin-top: 2px;
+  }
+  .struct-lang-tag.kr { background: #dce8f0; color: var(--navy); }
+  .struct-lang-tag.zh { background: #ccdde8; color: var(--teal); }
+  .struct-note-text {
+    font-size: 11px; color: var(--navy); line-height: 1.7;
+    font-family: monospace; opacity: .8;
+  }
+
+  /* ─── UTILITY ─── */
+  .hidden { display: none; }
+  .placeholder {
+    text-align: center; padding: 60px 20px; color: var(--teal);
+    font-style: italic; font-size: 14px; opacity: .6;
+  }
+  .placeholder .emoji {
+    font-size: 28px; margin-bottom: 8px; display: block; font-style: normal;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     TOP NAV BAR
+     Title on left, language toggle on right.
+════════════════════════════════════════════ -->
+<div class="nav">
+  <div>
+    <div class="nav-title">Conversation Drill</div>
+    <div class="nav-h">Korean & Chinese Weekly System</div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn" onclick="setLang('korean')">한국어</button>
+    <button class="lang-btn active" onclick="setLang('both')">Both</button>
+    <button class="lang-btn" onclick="setLang('chinese')">中文</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN TABS
+════════════════════════════════════════════ -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="setTab('drill')">Weekly Drills</button>
+  <button class="tab-btn" onclick="setTab('seeds')">Verb Seeds</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1: WEEKLY DRILLS
+════════════════════════════════════════════ -->
+<div id="tab-drill" class="content">
+  <div class="week-strip" id="week-strip"></div>
+  <div id="task-bar-el" class="task-bar normal">
+    <div class="task-label normal" id="task-label"></div>
+    <div class="task-text" id="task-text"></div>
+  </div>
+  <div id="drill-container"></div>
+  <div class="progress-bar">
+    <div class="progress-label">PROGRESS</div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:14.3%"></div>
+    </div>
+    <div class="progress-label" id="progress-pct">1/7</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2: VERB SEEDS
+════════════════════════════════════════════ -->
+<div id="tab-seeds" class="content hidden">
+  <div class="verb-buttons" id="verb-buttons"></div>
+  <div id="vocab-header"></div>
+  <div class="vocab-strip" id="vocab-strip"></div>
+  <div class="tense-tabs">
+    <button class="tense-btn active" onclick="setTense(0)">Present</button>
+    <button class="tense-btn" onclick="setTense(1)">Past</button>
+    <button class="tense-btn" onclick="setTense(2)">Future</button>
+  </div>
+  <div id="seed-card"></div>
+  <div class="struct-note" id="struct-note"></div>
+</div>
+
+
+<script>
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  DATA LAYER                                                   ║
+   ║                                                               ║
+   ║  All content is stored in plain JS objects. The render        ║
+   ║  functions read from these to build HTML. This separation     ║
+   ║  means you can edit content without touching render logic.    ║
+   ║                                                               ║
+   ║  Structure:                                                   ║
+   ║    weeks[]  — array of 7 week objects for the drill tab       ║
+   ║    verbs{}  — object of 12 verb seeds for the seeds tab       ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+
+
+/* ─────────────────────────────────────────────
+   HELPER: makeRep()
+   Shorthand factory for building a rep object.
+   Keeps the data declarations readable.
+
+   Parameters:
+     num      — rep number (1, 2, or 3)
+     title    — display title ("Origin", "Residence", etc.)
+     verb     — verb seed label ("오다 · 来 lái")
+     scenario — context-setting text (italic, below header)
+     kr       — { beats:[], ref:[], vocab:[] } for Korean
+     zh       — { beats:[], ref:[], vocab:[] } for Mandarin
+───────────────────────────────────────────── */
+function makeRep(num, title, verb, scenario, kr, zh) {
+  return { num, title, verb, scenario, kr, zh };
+}
+
+/* ─────────────────────────────────────────────
+   HELPER: B(type, label, prompt, hint, structure, partner, partnerPy)
+   Shorthand for beat objects.
+     type      — "b1" | "b2" | "b3" | "b4"
+     label     — display label ("STMT","ASK","ECHO","BRIDGE")
+     prompt    — instruction text
+     hint      — vocab/grammar hint
+     structure — optional target sentence pattern
+     partner   — optional partner response (shown at echo beats)
+     partnerPy — optional pinyin for partner response
+───────────────────────────────────────────── */
+function B(type, label, prompt, hint, structure, partner, partnerPy) {
+  return { type, label, prompt, hint, structure: structure||null, partner: partner||null, partnerPy: partnerPy||null };
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   WEEKS DATA
+   Each week has:
+     title    — display name for the week button
+     task     — instruction text for the task bar
+     isReview — true only for Week 7
+     reps     — array of 3 rep objects (empty for Week 7)
+     bridges  — { kr:[], zh:[] } connector patterns
+═══════════════════════════════════════════════════════════════ */
+const weeks = [
+
+  /* ═══════════════════════════════════════════
+     WEEK 1: Meeting Someone
+     Reps: Origin → Residence → Work
+     Chains from: (start of arc)
+     Chains to: "쉬는 날에는 뭐 해요?" / "平时有什么爱好吗？"
+  ════════════════════════════════════════════ */
+  {
+    title: "Meeting",
+    task: "Practice the full conversation chain: Origin → Residence → Work. Produce each beat aloud before checking the reference.",
+    isReview: false,
+    reps: [
+      makeRep(1, "Origin", "오다 · 来 lái",
+        "You're at a café. You've exchanged names and bowed. This is your first real conversation turn.",
+        { /* ── Korean ── */
+          beats: [
+            B("b1","STMT","Tell them where you came from.","에서 왔어요","[place] + 에서 왔어요."),
+            B("b2","ASK","Ask them where they're from.","어디","어디에서 왔어요?"),
+            B("b3","ECHO","They said 부산에서 왔어요. Confirm.","~에서요?",null,"부산에서 왔어요."),
+            B("b4","BRIDGE","React to 부산, then ask if they still live there.","지금도 / 살다")
+          ],
+          ref: [
+            {who:"you",text:"저는 뉴욕에서 왔어요."},
+            {who:"you",text:"어디에서 왔어요?"},
+            {who:"partner",text:"부산에서 왔어요."},
+            {who:"you",text:"부산에서요? 아, 좋은 데! 지금도 부산에서 살아요?"}
+          ],
+          vocab: [
+            {w:"좋은 데",m:"nice place"},
+            {w:"지금도",m:"still now / even now"},
+            {w:"지금도 부산에서 살아요?",m:"→ launches Rep 2"}
+          ]
+        },
+        { /* ── Mandarin ── */
+          beats: [
+            B("b1","STMT","Tell them where you're from.","是...人 (shì...rén)","我是 [place] 人。(Wǒ shì [place] rén.)"),
+            B("b2","ASK","Ask where they're from.","哪里 (nǎlǐ)","你是哪里人？(Nǐ shì nǎlǐ rén?)"),
+            B("b3","ECHO","They said 我是成都人. Echo it.","repeat + rising tone",null,"我是成都人。","Wǒ shì Chéngdū rén."),
+            B("b4","BRIDGE","React to 成都 (hotpot, pandas). Ask if they still live there.","现在 xiànzài / 还 hái / 住 zhù")
+          ],
+          ref: [
+            {who:"you",text:"我是纽约人。",py:"Wǒ shì Niǔyuē rén."},
+            {who:"you",text:"你是哪里人？",py:"Nǐ shì nǎlǐ rén?"},
+            {who:"partner",text:"我是成都人。",py:"Wǒ shì Chéngdū rén."},
+            {who:"you",text:"成都人？哦，听说那边的火锅特别好吃！你现在还住在成都吗？",py:"Chéngdū rén? Ó, tīngshuō nàbiān de huǒguō tèbié hǎochī! Nǐ xiànzài hái zhù zài Chéngdū ma?"}
+          ],
+          vocab: [
+            {w:"听说 tīngshuō",m:"I've heard that"},
+            {w:"火锅 huǒguō",m:"hotpot"},
+            {w:"特别好吃 tèbié hǎochī",m:"especially delicious"},
+            {w:"还...吗 hái...ma",m:"still...? → launches Rep 2"}
+          ]
+        }
+      ),
+
+      makeRep(2, "Residence", "살다 · 住 zhù",
+        "You just asked if they still live in 부산/成都. They said no — they moved. The conversation continues.",
+        {
+          beats: [
+            B("b1","STMT","They moved to Seoul. Now share where YOU live.","저는 / 지금 / 에서 살아요","아, 그렇구나. 저는 지금 [place]에서 살아요.","아니요, 지금은 서울에서 살아요."),
+            B("b2","ASK","You know they're in Seoul. Get specific — where in Seoul?","서울 어디","서울 어디에서 살아요?"),
+            B("b3","ECHO","They said 홍대 근처. Confirm.","~요? / 근처",null,"홍대 근처에서 살아요."),
+            B("b4","BRIDGE","React to 홍대. Ask if they work around there too.","회사 / 그쪽 / 일하다")
+          ],
+          ref: [
+            {who:"partner",text:"아니요, 지금은 서울에서 살아요."},
+            {who:"you",text:"아, 그렇구나. 저는 지금 뉴욕에서 살아요. 서울 어디에서 살아요?"},
+            {who:"partner",text:"홍대 근처에서 살아요."},
+            {who:"you",text:"홍대 근처요? 거기 좋죠! 회사도 그쪽에 있어요?"}
+          ],
+          vocab: [
+            {w:"그렇구나",m:"oh, I see"},
+            {w:"근처",m:"nearby / in the area of"},
+            {w:"좋죠",m:"it's nice, right?"},
+            {w:"회사도 그쪽에 있어요?",m:"→ launches Rep 3"}
+          ]
+        },
+        {
+          beats: [
+            B("b1","STMT","They moved to 上海. Share where YOU live.","我现在住在 Wǒ xiànzài zhù zài","啊，[react]。我现在住在 [place]。","不在了，我现在住在上海。","Bú zài le, wǒ xiànzài zhù zài Shànghǎi."),
+            B("b2","ASK","Ask where in 上海 they live.","哪里 nǎlǐ / 哪个区 nǎge qū","你住在上海哪里？"),
+            B("b3","ECHO","They said 浦东 (Pǔdōng). Confirm with a tag.","吧 ba / 对吧 duì ba",null,"浦东。","Pǔdōng."),
+            B("b4","BRIDGE","React to 浦东 (business district). Ask if they work there.","上班 shàngbān / 在那边 zài nàbiān")
+          ],
+          ref: [
+            {who:"partner",text:"不在了，我现在住在上海。",py:"Bú zài le, wǒ xiànzài zhù zài Shànghǎi."},
+            {who:"you",text:"啊，上海啊。我现在住在纽约。你住在上海哪里？",py:"Á, Shànghǎi a. Wǒ xiànzài zhù zài Niǔyuē. Nǐ zhù zài Shànghǎi nǎlǐ?"},
+            {who:"partner",text:"浦东。",py:"Pǔdōng."},
+            {who:"you",text:"浦东？那边挺现代的吧？你也在那边上班吗？",py:"Pǔdōng? Nàbiān tǐng xiàndài de ba? Nǐ yě zài nàbiān shàngbān ma?"}
+          ],
+          vocab: [
+            {w:"挺...的 tǐng...de",m:"quite / pretty"},
+            {w:"上班 shàngbān",m:"go to work"},
+            {w:"你也在那边上班吗？",m:"→ launches Rep 3"}
+          ]
+        }
+      ),
+
+      makeRep(3, "Work", "하다 · 做 zuò",
+        "You asked if they work near 홍대/浦东. They're answering. Keep it going.",
+        {
+          beats: [
+            B("b1","STMT","Their office is in 강남. React, then share what YOU do.","저는 / 일을 해요","[react] + 저는 [field] 일을 해요.","아니요, 회사는 강남에 있어요."),
+            B("b2","ASK","Ask what kind of work they do.","무슨","무슨 일 하세요?"),
+            B("b3","ECHO","They said 마케팅 일을 해요. Confirm.","~이요? / 진짜요?",null,"마케팅 일을 해요."),
+            B("b4","BRIDGE","React genuinely. Ask about days off → Week 2.","재미있다 / 쉬는 날 / 바쁘다")
+          ],
+          ref: [
+            {who:"partner",text:"아니요, 회사는 강남에 있어요."},
+            {who:"you",text:"아, 강남이요? 홍대에서 좀 멀겠다. 저는 사이버 보안 일을 해요. 무슨 일 하세요?"},
+            {who:"partner",text:"마케팅 일을 해요."},
+            {who:"you",text:"마케팅이요? 재미있겠다! 근데 바쁘죠? 쉬는 날에는 뭐 해요?"}
+          ],
+          vocab: [
+            {w:"좀 멀겠다",m:"must be a bit far"},
+            {w:"재미있겠다",m:"must be fun"},
+            {w:"근데",m:"but / by the way"},
+            {w:"쉬는 날에는 뭐 해요?",m:"→ bridges to Week 2"}
+          ]
+        },
+        {
+          beats: [
+            B("b1","STMT","They work in 浦东. React, share what YOU do.","我是做...的 Wǒ shì zuò...de","[react] + 我是做 [field] 的。","对，公司在浦东。","Duì, gōngsī zài Pǔdōng."),
+            B("b2","ASK","Ask what they do.","什么 shénme","你做什么工作？"),
+            B("b3","ECHO","They said 做金融的 (finance). Confirm.","哪个方面 nǎge fāngmiàn",null,"做金融的。","Zuò jīnróng de."),
+            B("b4","BRIDGE","React, then ask about hobbies → Week 2.","平时 píngshí / 爱好 àihào")
+          ],
+          ref: [
+            {who:"partner",text:"对，公司在浦东。",py:"Duì, gōngsī zài Pǔdōng."},
+            {who:"you",text:"哦，难怪。我是做网络安全的。你做什么工作？",py:"Ó, nánguài. Wǒ shì zuò wǎngluò ānquán de. Nǐ zuò shénme gōngzuò?"},
+            {who:"partner",text:"做金融的。",py:"Zuò jīnróng de."},
+            {who:"you",text:"金融？哪个方面的？哦，厉害！金融工作一定很忙吧。平时有什么爱好吗？",py:"Jīnróng? Nǎge fāngmiàn de? Ó, lìhai! Jīnróng gōngzuò yídìng hěn máng ba. Píngshí yǒu shénme àihào ma?"}
+          ],
+          vocab: [
+            {w:"难怪 nánguài",m:"no wonder"},
+            {w:"厉害 lìhai",m:"impressive"},
+            {w:"平时有什么爱好吗？",m:"→ bridges to Week 2"}
+          ]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"아, 그렇구나",m:"Oh, I see"},{p:"지금도 ~?",m:"Still ~?"},{p:"그쪽에서",m:"Around there"},{p:"근데",m:"But / by the way"},{p:"~겠다",m:"Must be ~ (inference)"},{p:"~죠?",m:"~right?"}],
+      zh:[{p:"听说 tīngshuō",m:"I've heard that"},{p:"难怪 nánguài",m:"No wonder"},{p:"还...吗 hái...ma",m:"Still...?"},{p:"挺...的吧 tǐng...de ba",m:"Pretty ~, right?"},{p:"一定很... yídìng hěn...",m:"Must be very..."}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 2: Hobbies & Interests
+     Reps: General hobbies → Going deeper → Trying things
+  ════════════════════════════════════════════ */
+  {
+    title: "Hobbies",
+    task: "Chain from Week 1's bridge: What do you do on your days off? Explore hobbies, go deep into one, then discover something to try.",
+    isReview: false,
+    reps: [
+      makeRep(1, "General Hobbies", "좋아하다 · 喜欢 xǐhuan",
+        "Your partner asked what you do on your days off (Week 1 bridge). Time to talk about hobbies.",
+        {
+          beats: [
+            B("b1","STMT","They asked '쉬는 날에는 뭐 해요?' Answer with 2-3 things you enjoy.","좋아하다 / 보통","저는 보통 [hobby] 하고 [hobby] 해요."),
+            B("b2","ASK","Ask what they like to do.","뭐 / 좋아하다","[이름]씨는 뭐 좋아해요?"),
+            B("b3","ECHO","They said '요리하고 게임 좋아해요.' Echo one that interests you.","~요? / 진짜",null,"저는 요리하고 게임 좋아해요."),
+            B("b4","BRIDGE","React to cooking. Ask what kind of food they make.","보통 / 어떤 / 만들다")
+          ],
+          ref: [
+            {who:"you",text:"저는 보통 게임하고 요리해요. 음악도 좋아해요."},
+            {who:"you",text:"[이름]씨는 뭐 좋아해요?"},
+            {who:"partner",text:"저는 요리하고 게임 좋아해요."},
+            {who:"you",text:"요리요? 진짜요? 저도 요리 좋아해요! 보통 어떤 음식 만들어요?"}
+          ],
+          vocab: [{w:"보통",m:"usually"},{w:"하고",m:"and (activities)"},{w:"어떤",m:"what kind of"},{w:"만들다",m:"to make → launches Rep 2"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They asked '平时有什么爱好吗？' Answer with 2-3 things.","喜欢 xǐhuan / 还有 háiyǒu","我平时喜欢 [hobby]，还喜欢 [hobby]。"),
+            B("b2","ASK","Ask what they like to do.","呢 ne","你呢？你喜欢做什么？"),
+            B("b3","ECHO","They said '我喜欢做饭，也喜欢打游戏。' Echo one.","真的吗 zhēn de ma",null,"我喜欢做饭，也喜欢打游戏。","Wǒ xǐhuan zuòfàn, yě xǐhuan dǎ yóuxì."),
+            B("b4","BRIDGE","React to cooking. Ask what kind of food they make.","一般 yìbān / 什么菜 shénme cài")
+          ],
+          ref: [
+            {who:"you",text:"我平时喜欢打游戏，还喜欢做饭。音乐也喜欢听。",py:"Wǒ píngshí xǐhuan dǎ yóuxì, hái xǐhuan zuòfàn. Yīnyuè yě xǐhuan tīng."},
+            {who:"you",text:"你呢？你喜欢做什么？",py:"Nǐ ne? Nǐ xǐhuan zuò shénme?"},
+            {who:"partner",text:"我喜欢做饭，也喜欢打游戏。",py:"Wǒ xǐhuan zuòfàn, yě xǐhuan dǎ yóuxì."},
+            {who:"you",text:"做饭？真的吗？我也喜欢！你一般做什么菜？",py:"Zuòfàn? Zhēn de ma? Wǒ yě xǐhuan! Nǐ yìbān zuò shénme cài?"}
+          ],
+          vocab: [{w:"打游戏 dǎ yóuxì",m:"play games"},{w:"做饭 zuòfàn",m:"cook"},{w:"一般 yìbān",m:"usually"},{w:"什么菜 shénme cài",m:"what dishes → Rep 2"}]
+        }
+      ),
+      makeRep(2, "Going Deeper", "하다 · 做 zuò, 보다 · 看 kàn",
+        "You asked what food they usually make. They're telling you more about their cooking hobby.",
+        {
+          beats: [
+            B("b1","STMT","They make Korean food and watch cooking videos. React, share YOUR detail.","저도 / 자주 / 영상","아, 저도 [your detail].","한국 음식을 자주 만들어요. 유튜브에서 요리 영상도 봐요."),
+            B("b2","ASK","Ask how often they cook.","얼마나 자주","얼마나 자주 요리해요?"),
+            B("b3","ECHO","They said '주말마다 해요.' Confirm.","주말마다 / ~요?",null,"주말마다 해요."),
+            B("b4","BRIDGE","Express admiration. Ask for a beginner recommendation.","추천 / 해 보다 / 만들어 보고 싶다")
+          ],
+          ref: [
+            {who:"partner",text:"한국 음식을 자주 만들어요. 유튜브에서 요리 영상도 봐요."},
+            {who:"you",text:"아, 진짜요? 저도 유튜브에서 요리 영상 자주 봐요! 얼마나 자주 요리해요?"},
+            {who:"partner",text:"주말마다 해요."},
+            {who:"you",text:"주말마다요? 부지런하다! 저도 한국 음식 만들어 보고 싶은데, 뭐 추천해 줄 수 있어요?"}
+          ],
+          vocab: [{w:"자주",m:"often"},{w:"영상",m:"video"},{w:"주말마다",m:"every weekend"},{w:"부지런하다",m:"diligent"},{w:"추천해 주다",m:"to recommend → Rep 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They make Chinese food and watch videos. React, share yours.","我也 wǒ yě / 经常 jīngcháng",null,"我一般做中国菜。我也喜欢在网上看做饭的视频。","Wǒ yìbān zuò Zhōngguó cài. Wǒ yě xǐhuan zài wǎngshang kàn zuòfàn de shìpín."),
+            B("b2","ASK","Ask how often they cook.","多久...一次 duō jiǔ...yí cì","你多久做一次饭？"),
+            B("b3","ECHO","They said '每个周末都做。' Confirm.","每个 měi ge",null,"每个周末都做。","Měi ge zhōumò dōu zuò."),
+            B("b4","BRIDGE","Ask for a simple dish recommendation.","推荐 tuījiàn / 简单 jiǎndān")
+          ],
+          ref: [
+            {who:"partner",text:"我一般做中国菜。我也喜欢在网上看做饭的视频。",py:"Wǒ yìbān zuò Zhōngguó cài. Wǒ yě xǐhuan zài wǎngshang kàn zuòfàn de shìpín."},
+            {who:"you",text:"哦，真的？我也经常在网上看做饭的视频！你多久做一次饭？",py:"Ó, zhēn de? Wǒ yě jīngcháng zài wǎngshang kàn zuòfàn de shìpín! Nǐ duō jiǔ zuò yí cì fàn?"},
+            {who:"partner",text:"每个周末都做。",py:"Měi ge zhōumò dōu zuò."},
+            {who:"you",text:"每个周末？好厉害！我也想学做中国菜。你能推荐一个简单的菜吗？",py:"Měi ge zhōumò? Hǎo lìhai! Wǒ yě xiǎng xué zuò Zhōngguó cài. Nǐ néng tuījiàn yí ge jiǎndān de cài ma?"}
+          ],
+          vocab: [{w:"经常 jīngcháng",m:"often"},{w:"网上 wǎngshang",m:"online"},{w:"多久一次 duō jiǔ yí cì",m:"how often"},{w:"推荐 tuījiàn",m:"recommend → Rep 3"}]
+        }
+      ),
+      makeRep(3, "Trying New Things", "~고 싶다 · 想 xiǎng",
+        "You asked for a recommendation. They're suggesting something. The conversation is getting warm.",
+        {
+          beats: [
+            B("b1","STMT","They recommended 떡볶이 (easy + delicious). React, share what you want to try.","해 보다 / ~고 싶다",null,"떡볶이 추천해요! 쉽고 맛있어요."),
+            B("b2","ASK","Ask where they buy ingredients.","어디에서 / 재료 / 사다","재료는 보통 어디에서 사요?"),
+            B("b3","ECHO","They said '한국 마트에서 사요.' Confirm.","마트 / 근처",null,"한국 마트에서 사요. 집 근처에 있어요."),
+            B("b4","BRIDGE","React. Ask about restaurants nearby → Week 3.","맛집 / 식당 / 혹시")
+          ],
+          ref: [
+            {who:"partner",text:"떡볶이 추천해요! 쉽고 맛있어요."},
+            {who:"you",text:"아, 떡볶이! 저도 떡볶이 좋아해요. 만들어 보고 싶어요! 재료는 보통 어디에서 사요?"},
+            {who:"partner",text:"한국 마트에서 사요. 집 근처에 있어요."},
+            {who:"you",text:"아, 좋겠다! 근데 혹시 이 근처에 맛있는 한국 식당도 알아요?"}
+          ],
+          vocab: [{w:"재료",m:"ingredients"},{w:"사다",m:"to buy"},{w:"편하겠다",m:"must be convenient"},{w:"혹시",m:"by any chance"},{w:"맛집",m:"popular restaurant → Week 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They recommended 番茄炒蛋 (tomato egg). React, share what you want to try.","试试 shìshi / 想 xiǎng",null,"我推荐番茄炒蛋！又简单又好吃。","Wǒ tuījiàn fānqié chǎo dàn! Yòu jiǎndān yòu hǎochī."),
+            B("b2","ASK","Ask where they buy ingredients.","哪里 nǎlǐ / 食材 shícái","你一般在哪里买食材？"),
+            B("b3","ECHO","They said '在中国超市买。' Confirm.","超市 chāoshì / 附近 fùjìn",null,"在中国超市买。我家附近有一家。","Zài Zhōngguó chāoshì mǎi. Wǒ jiā fùjìn yǒu yì jiā."),
+            B("b4","BRIDGE","React. Ask about restaurants → Week 3.","餐厅 cāntīng / 好吃的 hǎochī de")
+          ],
+          ref: [
+            {who:"partner",text:"我推荐番茄炒蛋！又简单又好吃。",py:"Wǒ tuījiàn fānqié chǎo dàn! Yòu jiǎndān yòu hǎochī."},
+            {who:"you",text:"番茄炒蛋？听起来不错！我想试试。你一般在哪里买食材？",py:"Fānqié chǎo dàn? Tīng qǐlái búcuò! Wǒ xiǎng shìshi. Nǐ yìbān zài nǎlǐ mǎi shícái?"},
+            {who:"partner",text:"在中国超市买。我家附近有一家。",py:"Zài Zhōngguó chāoshì mǎi. Wǒ jiā fùjìn yǒu yì jiā."},
+            {who:"you",text:"哦，方便！对了，这附近有没有好吃的中国餐厅？",py:"Ó, fāngbiàn! Duìle, zhè fùjìn yǒu méiyǒu hǎochī de Zhōngguó cāntīng?"}
+          ],
+          vocab: [{w:"番茄炒蛋 fānqié chǎo dàn",m:"tomato egg stir-fry"},{w:"听起来 tīng qǐlái",m:"sounds like"},{w:"试试 shìshi",m:"try"},{w:"对了 duìle",m:"oh right → Week 3"}]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"보통",m:"usually"},{p:"얼마나 자주",m:"how often"},{p:"~마다",m:"every ~"},{p:"~어/아 보다",m:"to try doing"},{p:"추천해 주다",m:"to recommend"},{p:"혹시",m:"by any chance"}],
+      zh:[{p:"一般 yìbān",m:"usually"},{p:"多久...一次",m:"how often"},{p:"每个 měi ge",m:"every"},{p:"试试 shìshi",m:"try"},{p:"推荐 tuījiàn",m:"recommend"},{p:"对了 duìle",m:"oh right"},{p:"听起来 tīng qǐlái",m:"sounds like"}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 3: Food & Eating
+     Reps: Restaurant recs → Food preferences → Making plans
+  ════════════════════════════════════════════ */
+  {
+    title: "Food",
+    task: "Chain from Week 2: You asked about restaurants. Now explore food preferences, discover favorites, and make plans to eat together.",
+    isReview: false,
+    reps: [
+      makeRep(1, "Restaurant Recommendations", "알다 · 知道 zhīdào",
+        "You asked about good restaurants nearby. They know a great spot.",
+        {
+          beats: [
+            B("b1","STMT","They know a 삼겹살 place in 홍대. React, share a restaurant YOU like.","저도 / 자주 가다",null,"네! 홍대에 맛있는 삼겹살 집 알아요."),
+            B("b2","ASK","Ask what they usually order there.","보통 / 시키다","거기에서 보통 뭐 시켜요?"),
+            B("b3","ECHO","They said '삼겹살하고 된장찌개.' Confirm.","맛있다",null,"삼겹살하고 된장찌개 시켜요."),
+            B("b4","BRIDGE","React. Ask about food restrictions → Rep 2.","못 먹다 / 매운 거")
+          ],
+          ref: [
+            {who:"partner",text:"네! 홍대에 맛있는 삼겹살 집 알아요."},
+            {who:"you",text:"아, 삼겹살! 좋아요. 저도 고기 좋아해요. 거기에서 보통 뭐 시켜요?"},
+            {who:"partner",text:"삼겹살하고 된장찌개 시켜요."},
+            {who:"you",text:"된장찌개도요? 맛있죠! 근데 혹시 못 먹는 거 있어요?"}
+          ],
+          vocab: [{w:"삼겹살",m:"pork belly"},{w:"된장찌개",m:"soybean paste stew"},{w:"시키다",m:"to order"},{w:"못 먹다",m:"can't eat → Rep 2"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They know a Sichuan place nearby. React, share yours.","我也 / 经常去",null,"有啊！附近有一家很好吃的四川菜。","Yǒu a! Fùjìn yǒu yì jiā hěn hǎochī de Sìchuān cài."),
+            B("b2","ASK","Ask what they usually order.","一般 yìbān / 点 diǎn","你一般点什么？"),
+            B("b3","ECHO","They said '麻婆豆腐和回锅肉.' Confirm.","好吃",null,"我一般点麻婆豆腐和回锅肉。","Wǒ yìbān diǎn mápó dòufu hé huíguōròu."),
+            B("b4","BRIDGE","React. Ask about spice tolerance → Rep 2.","能吃辣 néng chī là")
+          ],
+          ref: [
+            {who:"partner",text:"有啊！附近有一家很好吃的四川菜。",py:"Yǒu a! Fùjìn yǒu yì jiā hěn hǎochī de Sìchuān cài."},
+            {who:"you",text:"四川菜？我喜欢！你一般点什么？",py:"Sìchuān cài? Wǒ xǐhuan! Nǐ yìbān diǎn shénme?"},
+            {who:"partner",text:"我一般点麻婆豆腐和回锅肉。",py:"Wǒ yìbān diǎn mápó dòufu hé huíguōròu."},
+            {who:"you",text:"听起来都很好吃！你能吃辣的吗？",py:"Tīng qǐlái dōu hěn hǎochī! Nǐ néng chī là de ma?"}
+          ],
+          vocab: [{w:"四川菜 Sìchuān cài",m:"Sichuan cuisine"},{w:"点 diǎn",m:"to order"},{w:"麻婆豆腐 mápó dòufu",m:"mapo tofu"},{w:"能吃辣 néng chī là",m:"can handle spicy → Rep 2"}]
+        }
+      ),
+      makeRep(2, "Food Preferences", "먹다 · 吃 chī",
+        "You asked about food restrictions. They're sharing their preferences.",
+        {
+          beats: [
+            B("b1","STMT","They love spicy food. React, share YOUR preferences.","매운 거 / 잘 먹다",null,"네, 매운 거 너무 좋아해요!"),
+            B("b2","ASK","Ask their absolute favorite food.","제일 / 좋아하는 음식","제일 좋아하는 음식이 뭐예요?"),
+            B("b3","ECHO","They said '김치찌개! 엄마가 만들어 주는 게 제일 맛있어요.' Confirm warmly.","최고",null,"김치찌개요! 엄마가 만들어 주는 게 제일 맛있어요."),
+            B("b4","BRIDGE","React warmly. Suggest going to the restaurant together.","같이 / 이번 주말")
+          ],
+          ref: [
+            {who:"partner",text:"네, 매운 거 너무 좋아해요! 한국 사람이니까요."},
+            {who:"you",text:"저도 매운 거 잘 먹어요! 제일 좋아하는 음식이 뭐예요?"},
+            {who:"partner",text:"김치찌개요! 엄마가 만들어 주는 게 제일 맛있어요."},
+            {who:"you",text:"아, 엄마 음식이 최고죠! 그럼 그 삼겹살 집 같이 가 볼까요? 이번 주말에?"}
+          ],
+          vocab: [{w:"제일",m:"the most"},{w:"최고",m:"the best"},{w:"같이",m:"together"},{w:"가 볼까요?",m:"shall we try going? → Rep 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They love spicy food. React, share yours.","我也 / 不太能 bú tài néng",null,"能啊！我特别能吃辣。我是四川人嘛。","Néng a! Wǒ tèbié néng chī là. Wǒ shì Sìchuān rén ma."),
+            B("b2","ASK","Ask their favorite food.","最 zuì / 喜欢吃 xǐhuan chī","你最喜欢吃什么？"),
+            B("b3","ECHO","They said '火锅！冬天最喜欢吃火锅。' Confirm.","超 chāo",null,"火锅！冬天的时候最喜欢吃火锅。","Huǒguō! Dōngtiān de shíhou zuì xǐhuan chī huǒguō."),
+            B("b4","BRIDGE","React. Suggest going to the restaurant together.","一起 yìqǐ / 吧 ba")
+          ],
+          ref: [
+            {who:"partner",text:"能啊！我特别能吃辣。",py:"Néng a! Wǒ tèbié néng chī là."},
+            {who:"you",text:"哈哈，难怪！你最喜欢吃什么？",py:"Hāhā, nánguài! Nǐ zuì xǐhuan chī shénme?"},
+            {who:"partner",text:"火锅！冬天的时候最喜欢吃火锅。",py:"Huǒguō! Dōngtiān de shíhou zuì xǐhuan chī huǒguō."},
+            {who:"you",text:"火锅！我也超喜欢！那我们这个周末一起去那家四川餐厅吧？",py:"Huǒguō! Wǒ yě chāo xǐhuan! Nà wǒmen zhège zhōumò yìqǐ qù nà jiā Sìchuān cāntīng ba?"}
+          ],
+          vocab: [{w:"最 zuì",m:"most"},{w:"超 chāo",m:"super (colloquial)"},{w:"一起 yìqǐ",m:"together"},{w:"吧 ba",m:"suggestion → Rep 3"}]
+        }
+      ),
+      makeRep(3, "Making Plans", "가다 · 去 qù",
+        "You suggested eating together this weekend. Now work out logistics.",
+        {
+          beats: [
+            B("b1","STMT","They said yes! Suggest a specific time.","토요일 / 어때요",null,"좋아요! 가요!"),
+            B("b2","ASK","Ask what time works.","몇 시 / 괜찮다","몇 시가 괜찮아요?"),
+            B("b3","ECHO","They said '저녁 6시 어때요?' Confirm.","좋아요",null,"저녁 6시 어때요?"),
+            B("b4","BRIDGE","Confirm the plan. Ask if they want to travel to Korea → Week 4.","여행 / 가 보다")
+          ],
+          ref: [
+            {who:"partner",text:"좋아요! 가요!"},
+            {who:"you",text:"그럼 토요일 어때요? 몇 시가 괜찮아요?"},
+            {who:"partner",text:"저녁 6시 어때요?"},
+            {who:"you",text:"좋아요, 토요일 6시! 근데 한국 음식 진짜 좋아하시네요. 혹시 한국 여행 가 보고 싶어요?"}
+          ],
+          vocab: [{w:"토요일",m:"Saturday"},{w:"어때요?",m:"how about?"},{w:"몇 시",m:"what time"},{w:"가 보고 싶다",m:"want to try going → Week 4"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They agreed! Suggest a time.","星期六 xīngqīliù",null,"好啊！走！","Hǎo a! Zǒu!"),
+            B("b2","ASK","Ask what time works.","几点 jǐ diǎn / 方便 fāngbiàn","几点方便？"),
+            B("b3","ECHO","They said '晚上六点怎么样？' Confirm.","怎么样 zěnmeyàng",null,"晚上六点怎么样？","Wǎnshang liù diǎn zěnmeyàng?"),
+            B("b4","BRIDGE","Confirm the plan. Ask about travel → Week 4.","旅行 lǚxíng / 想去 xiǎng qù")
+          ],
+          ref: [
+            {who:"partner",text:"好啊！走！",py:"Hǎo a! Zǒu!"},
+            {who:"you",text:"那星期六怎么样？几点方便？",py:"Nà xīngqīliù zěnmeyàng? Jǐ diǎn fāngbiàn?"},
+            {who:"partner",text:"晚上六点怎么样？",py:"Wǎnshang liù diǎn zěnmeyàng?"},
+            {who:"you",text:"好，星期六六点！对了，你这么喜欢中国菜，你想去中国旅行吗？",py:"Hǎo, xīngqīliù liù diǎn! Duìle, nǐ zhème xǐhuan Zhōngguó cài, nǐ xiǎng qù Zhōngguó lǚxíng ma?"}
+          ],
+          vocab: [{w:"走 zǒu",m:"let's go!"},{w:"星期六 xīngqīliù",m:"Saturday"},{w:"怎么样 zěnmeyàng",m:"how about"},{w:"旅行 lǚxíng",m:"travel → Week 4"}]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"같이",m:"together"},{p:"~(으)ㄹ까요?",m:"shall we?"},{p:"이번 주말",m:"this weekend"},{p:"몇 시",m:"what time"},{p:"어때요?",m:"how about?"}],
+      zh:[{p:"一起 yìqǐ",m:"together"},{p:"吧 ba",m:"suggestion"},{p:"怎么样 zěnmeyàng",m:"how about"},{p:"几点 jǐ diǎn",m:"what time"},{p:"走 zǒu",m:"let's go"}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 4: Travel & Places
+     Reps: Travel dreams → Experiences → If I went there...
+  ════════════════════════════════════════════ */
+  {
+    title: "Travel",
+    task: "Chain from Week 3: You asked about traveling to Korea/China. Explore travel dreams, share past experiences, and imagine what you'd do there.",
+    isReview: false,
+    reps: [
+      makeRep(1, "Travel Dreams", "~고 싶다 · 想 xiǎng",
+        "You asked if they want to travel to Korea/China. Dreams and destinations come up.",
+        {
+          beats: [
+            B("b1","STMT","They asked you back. Share where YOU want to travel and why.","가 보고 싶다 / 때문에",null,"저도요! [이름]씨는 한국 가 보고 싶어요?"),
+            B("b2","ASK","Ask where specifically they want to go.","제일 / 곳","제일 가 보고 싶은 곳이 어디예요?"),
+            B("b3","ECHO","They said '제주도! 자연이 예쁘다고 들었어요.' Confirm.","예쁘다",null,"제주도요! 자연이 예쁘다고 들었어요."),
+            B("b4","BRIDGE","React. Ask if they've traveled abroad before.","해외 / 가 본 적 있다")
+          ],
+          ref: [
+            {who:"partner",text:"저도요! [이름]씨는 한국 가 보고 싶어요?"},
+            {who:"you",text:"네, 서울하고 제주도 가 보고 싶어요. 한국어 공부하고 있으니까요! 제일 가 보고 싶은 곳이 어디예요?"},
+            {who:"partner",text:"제주도요! 자연이 예쁘다고 들었어요."},
+            {who:"you",text:"제주도 진짜 예쁘대요! 혹시 해외 여행 가 본 적 있어요?"}
+          ],
+          vocab: [{w:"곳",m:"place"},{w:"예쁘다고 들었어요",m:"I heard it's pretty"},{w:"해외",m:"overseas"},{w:"가 본 적 있다",m:"have been to → Rep 2"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They asked you back. Share your dreams.","想去 xiǎng qù / 因为 yīnwèi",null,"我也想！你呢？你想去哪里旅行？","Wǒ yě xiǎng! Nǐ ne? Nǐ xiǎng qù nǎlǐ lǚxíng?"),
+            B("b2","ASK","Ask where specifically they want to go.","最想去 zuì xiǎng qù","你最想去哪里？"),
+            B("b3","ECHO","They said '成都！熊猫基地特别好玩。' Confirm.","好玩 hǎowán",null,"我最想去成都！听说那边的熊猫基地特别好玩。","Wǒ zuì xiǎng qù Chéngdū! Tīngshuō nàbiān de xióngmāo jīdì tèbié hǎowán."),
+            B("b4","BRIDGE","React. Ask if they've traveled abroad.","出国 chūguó / 过 guo")
+          ],
+          ref: [
+            {who:"partner",text:"我也想！你呢？",py:"Wǒ yě xiǎng! Nǐ ne?"},
+            {who:"you",text:"我想去韩国！因为我在学韩语。你最想去哪里？",py:"Wǒ xiǎng qù Hánguó! Yīnwèi wǒ zài xué Hányǔ. Nǐ zuì xiǎng qù nǎlǐ?"},
+            {who:"partner",text:"我最想去成都！听说那边的熊猫基地特别好玩。",py:"Wǒ zuì xiǎng qù Chéngdū! Tīngshuō nàbiān de xióngmāo jīdì tèbié hǎowán."},
+            {who:"you",text:"成都一定很好玩！你以前出国旅行过吗？",py:"Chéngdū yídìng hěn hǎowán! Nǐ yǐqián chūguó lǚxíng guo ma?"}
+          ],
+          vocab: [{w:"因为 yīnwèi",m:"because"},{w:"熊猫基地 xióngmāo jīdì",m:"panda base"},{w:"出国 chūguó",m:"go abroad"},{w:"过 guo",m:"experiential → Rep 2"}]
+        }
+      ),
+      makeRep(2, "Travel Experiences", "가다 · 去 qù",
+        "You asked about past travel. They went to Japan.",
+        {
+          beats: [
+            B("b1","STMT","They went to Japan last year. React, share YOUR experience.","저도 / 가 보다",null,"네, 작년에 일본에 갔어요. 진짜 좋았어요!"),
+            B("b2","ASK","Ask what the best part was.","제일 좋다 / 뭐가","뭐가 제일 좋았어요?"),
+            B("b3","ECHO","They said '음식! 라면이 맛있었어요.' Confirm.","맞아요",null,"음식이요! 라면이 진짜 맛있었어요."),
+            B("b4","BRIDGE","React. Ask what they'd do in Korea.","한국에 가면 / 뭐 하다")
+          ],
+          ref: [
+            {who:"partner",text:"네, 작년에 일본에 갔어요. 진짜 좋았어요!"},
+            {who:"you",text:"와, 일본! 저도 가 보고 싶어요. 뭐가 제일 좋았어요?"},
+            {who:"partner",text:"음식이요! 라면이 진짜 맛있었어요."},
+            {who:"you",text:"맞아요, 일본 음식 맛있죠! 한국에 가면 뭐 하고 싶어요?"}
+          ],
+          vocab: [{w:"작년",m:"last year"},{w:"맞아요",m:"that's right"},{w:"~(으)면",m:"if (conditional) → Rep 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They went to Japan. React, share yours.","我也 / 想去",null,"去过！去年去了日本。特别好玩！","Qùguo! Qùnián qùle Rìběn. Tèbié hǎowán!"),
+            B("b2","ASK","Ask what was best.","最喜欢 zuì xǐhuan","你最喜欢什么？"),
+            B("b3","ECHO","They said '美食！拉面特别好吃。' Confirm.","对 duì",null,"美食！拉面特别好吃。","Měishí! Lāmiàn tèbié hǎochī."),
+            B("b4","BRIDGE","React. Ask what they'd do in Korea.","如果去 rúguǒ qù / 想做什么")
+          ],
+          ref: [
+            {who:"partner",text:"去过！去年去了日本。",py:"Qùguo! Qùnián qùle Rìběn."},
+            {who:"you",text:"哇，日本！我也想去。你最喜欢什么？",py:"Wa, Rìběn! Wǒ yě xiǎng qù. Nǐ zuì xǐhuan shénme?"},
+            {who:"partner",text:"美食！拉面特别好吃。",py:"Měishí! Lāmiàn tèbié hǎochī."},
+            {who:"you",text:"对！日本拉面真的很好吃。如果去韩国的话，你想做什么？",py:"Duì! Rìběn lāmiàn zhēn de hěn hǎochī. Rúguǒ qù Hánguó de huà, nǐ xiǎng zuò shénme?"}
+          ],
+          vocab: [{w:"去年 qùnián",m:"last year"},{w:"美食 měishí",m:"cuisine"},{w:"如果...的话 rúguǒ...de huà",m:"if...then → Rep 3"}]
+        }
+      ),
+      makeRep(3, "If I Went There...", "보다 · 看 kàn",
+        "You asked what they'd do in Korea/China. Dreams and goals come up.",
+        {
+          beats: [
+            B("b1","STMT","They want to see concerts and try street food. Share what YOU'd do.","~고 싶다 / 배우다",null,"BTS 콘서트 가 보고 싶고, 길거리 음식도 먹어 보고 싶어요!"),
+            B("b2","ASK","Ask if there's something they want to learn there.","배우다 / 해 보다","한국에서 배워 보고 싶은 거 있어요?"),
+            B("b3","ECHO","They want to improve their Korean. Confirm warmly.","맞아요 / 빨리 늘다",null,"한국어를 더 잘하고 싶어요. 현지에서 배우면 빨리 늘 것 같아요."),
+            B("b4","BRIDGE","React. Ask about other goals beyond language → Week 5.","목표 / 말고 / 다른")
+          ],
+          ref: [
+            {who:"partner",text:"BTS 콘서트 가 보고 싶고, 길거리 음식도 먹어 보고 싶어요!"},
+            {who:"you",text:"좋겠다! 저는 한국어 수업 들어 보고 싶어요. 한국에서 배워 보고 싶은 거 있어요?"},
+            {who:"partner",text:"한국어를 더 잘하고 싶어요. 현지에서 배우면 빨리 늘 것 같아요."},
+            {who:"you",text:"맞아요, 현지에서 배우면 빨리 늘어요! 한국어 말고 다른 목표도 있어요?"}
+          ],
+          vocab: [{w:"현지",m:"on-site / locally"},{w:"빨리 늘다",m:"improve quickly"},{w:"말고",m:"other than"},{w:"목표",m:"goal → Week 5"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They want to see the Great Wall and eat street food. Share yours.","想 xiǎng / 学 xué",null,"我想去长城看看，还想吃地道的小吃！","Wǒ xiǎng qù Chángchéng kànkan, hái xiǎng chī dìdào de xiǎochī!"),
+            B("b2","ASK","Ask what they want to learn or experience.","学 xué / 体验 tǐyàn","你想在那边学什么或者体验什么？"),
+            B("b3","ECHO","They want to master Chinese. Confirm.","进步 jìnbù",null,"想把中文学好！在中国学的话应该进步很快。","Xiǎng bǎ Zhōngwén xué hǎo! Zài Zhōngguó xué de huà yīnggāi jìnbù hěn kuài."),
+            B("b4","BRIDGE","React. Ask about other life goals → Week 5.","目标 mùbiāo / 除了 chúle")
+          ],
+          ref: [
+            {who:"partner",text:"我想去长城看看，还想吃地道的小吃！",py:"Wǒ xiǎng qù Chángchéng kànkan, hái xiǎng chī dìdào de xiǎochī!"},
+            {who:"you",text:"好棒！我想在中国学中文。你想在那边学什么或者体验什么？",py:"Hǎo bàng! Wǒ xiǎng zài Zhōngguó xué Zhōngwén. Nǐ xiǎng zài nàbiān xué shénme huòzhě tǐyàn shénme?"},
+            {who:"partner",text:"想把中文学好！在中国学的话应该进步很快。",py:"Xiǎng bǎ Zhōngwén xué hǎo! Zài Zhōngguó xué de huà yīnggāi jìnbù hěn kuài."},
+            {who:"you",text:"对，在那边学肯定进步快！除了学中文，你以后还有什么目标？",py:"Duì, zài nàbiān xué kěndìng jìnbù kuài! Chúle xué Zhōngwén, nǐ yǐhòu hái yǒu shénme mùbiāo?"}
+          ],
+          vocab: [{w:"长城 Chángchéng",m:"Great Wall"},{w:"地道 dìdào",m:"authentic"},{w:"把...学好 bǎ...xué hǎo",m:"to master"},{w:"除了 chúle",m:"besides → Week 5"}]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"~(으)면",m:"if (conditional)"},{p:"가 본 적 있다",m:"have been to"},{p:"말고",m:"aside from"},{p:"현지",m:"on-site / locally"}],
+      zh:[{p:"如果...的话 rúguǒ...de huà",m:"if...then"},{p:"去过 qùguo",m:"have been to"},{p:"除了 chúle",m:"besides"},{p:"肯定 kěndìng",m:"definitely"}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 5: Goals & Dreams
+     Reps: Life goals → Motivation → Challenges
+  ════════════════════════════════════════════ */
+  {
+    title: "Goals",
+    task: "Chain from Week 4: You asked about goals beyond language. Explore life dreams, what drives them, and the hardest parts.",
+    isReview: false,
+    reps: [
+      makeRep(1, "Life Goals", "되다 · 成为 chéngwéi",
+        "You asked about goals beyond language learning. Real dreams come up.",
+        {
+          beats: [
+            B("b1","STMT","They asked your goals. Share something real — career change, creative pursuit, living abroad.","꿈 / 나중에",null,"한국어 말고 다른 목표도 있어요?"),
+            B("b2","ASK","Ask what their dream is.","꿈 / 나중에","[이름]씨 꿈이 뭐예요?"),
+            B("b3","ECHO","They want to start their own business. Confirm.","멋있다",null,"저는 나중에 자기 사업을 하고 싶어요."),
+            B("b4","BRIDGE","React. Ask what kind of business and why.","어떤 / 왜 / 이유")
+          ],
+          ref: [
+            {who:"partner",text:"한국어 말고 다른 목표도 있어요?"},
+            {who:"you",text:"네, 저는 한국에서 살고 싶어요. 그리고 창의적인 일을 하고 싶어요. [이름]씨 꿈이 뭐예요?"},
+            {who:"partner",text:"저는 나중에 자기 사업을 하고 싶어요."},
+            {who:"you",text:"사업이요? 멋있다! 어떤 사업이요? 왜 그게 하고 싶어요?"}
+          ],
+          vocab: [{w:"꿈",m:"dream"},{w:"나중에",m:"later / in the future"},{w:"사업",m:"business"},{w:"멋있다",m:"cool / impressive → Rep 2"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","Share your goals.","以后 yǐhòu / 想 xiǎng",null,"除了学中文，你以后还有什么目标？","Chúle xué Zhōngwén, nǐ yǐhòu hái yǒu shénme mùbiāo?"),
+            B("b2","ASK","Ask about their dream.","梦想 mèngxiǎng","你的梦想是什么？"),
+            B("b3","ECHO","They want to start a company. Confirm.","厉害 lìhai",null,"我想自己开一家公司。","Wǒ xiǎng zìjǐ kāi yì jiā gōngsī."),
+            B("b4","BRIDGE","React. Ask what kind and why.","什么样的 shénmeyàng de / 为什么 wèishénme")
+          ],
+          ref: [
+            {who:"partner",text:"除了学中文，你以后还有什么目标？",py:"Chúle xué Zhōngwén, nǐ yǐhòu hái yǒu shénme mùbiāo?"},
+            {who:"you",text:"我想在韩国生活，做一些有创意的工作。你的梦想是什么？",py:"Wǒ xiǎng zài Hánguó shēnghuó, zuò yìxiē yǒu chuàngyì de gōngzuò. Nǐ de mèngxiǎng shì shénme?"},
+            {who:"partner",text:"我想自己开一家公司。",py:"Wǒ xiǎng zìjǐ kāi yì jiā gōngsī."},
+            {who:"you",text:"开公司？好厉害！什么样的公司？为什么想做这个？",py:"Kāi gōngsī? Hǎo lìhai! Shénmeyàng de gōngsī? Wèishénme xiǎng zuò zhège?"}
+          ],
+          vocab: [{w:"梦想 mèngxiǎng",m:"dream"},{w:"开公司 kāi gōngsī",m:"start a company"},{w:"为什么 wèishénme",m:"why → Rep 2"}]
+        }
+      ),
+      makeRep(2, "Motivation", "~고 싶다 · 想",
+        "You asked why they want to start a business. Values and motivation surface.",
+        {
+          beats: [
+            B("b1","STMT","They want freedom and to help people. React, share YOUR drive.","자유 / 도와주다",null,"자유롭게 일하고 싶고, 사람들을 도와주고 싶어요."),
+            B("b2","ASK","Ask what they're doing now to prepare.","위해서 / 준비하다","그 꿈을 위해서 지금 뭐 하고 있어요?"),
+            B("b3","ECHO","They're saving money and taking online courses. Confirm.","대단하다",null,"돈을 모으고 있고, 온라인 강의도 듣고 있어요."),
+            B("b4","BRIDGE","Encourage them. Ask what's hardest.","제일 힘든 / 부분")
+          ],
+          ref: [
+            {who:"partner",text:"자유롭게 일하고 싶고, 다른 사람들을 도와주고 싶어요."},
+            {who:"you",text:"멋있어요! 저도 비슷해요. 그 꿈을 위해서 지금 뭐 하고 있어요?"},
+            {who:"partner",text:"돈을 모으고 있고, 온라인 강의도 듣고 있어요."},
+            {who:"you",text:"대단하다! 근데 제일 힘든 부분이 뭐예요?"}
+          ],
+          vocab: [{w:"자유롭게",m:"freely"},{w:"위해서",m:"for the sake of"},{w:"모으다",m:"to save/collect"},{w:"대단하다",m:"amazing → Rep 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They want freedom and helping people. React, share yours.","自由 zìyóu / 帮助 bāngzhù",null,"我想自由地工作，也想帮助别人。","Wǒ xiǎng zìyóu de gōngzuò, yě xiǎng bāngzhù biérén."),
+            B("b2","ASK","Ask what they're doing to prepare.","为了 wèile / 准备 zhǔnbèi","为了这个目标，你现在在做什么？"),
+            B("b3","ECHO","They're saving money and studying online. Confirm.","好棒 hǎo bàng",null,"在存钱，也在网上学习。","Zài cún qián, yě zài wǎngshang xuéxí."),
+            B("b4","BRIDGE","Encourage. Ask what's hardest.","最难 zuì nán / 部分 bùfen")
+          ],
+          ref: [
+            {who:"partner",text:"我想自由地工作，也想帮助别人。",py:"Wǒ xiǎng zìyóu de gōngzuò, yě xiǎng bāngzhù biérén."},
+            {who:"you",text:"我也是！为了这个目标，你现在在做什么？",py:"Wǒ yě shì! Wèile zhège mùbiāo, nǐ xiànzài zài zuò shénme?"},
+            {who:"partner",text:"在存钱，也在网上学习。",py:"Zài cún qián, yě zài wǎngshang xuéxí."},
+            {who:"you",text:"好棒！最难的部分是什么？",py:"Hǎo bàng! Zuì nán de bùfen shì shénme?"}
+          ],
+          vocab: [{w:"为了 wèile",m:"for (purpose)"},{w:"存钱 cún qián",m:"save money"},{w:"最难 zuì nán",m:"hardest → Rep 3"}]
+        }
+      ),
+      makeRep(3, "Challenges", "하다 · 做",
+        "You asked what's hardest. They're being vulnerable.",
+        {
+          beats: [
+            B("b1","STMT","Time management is hardest for them. React, share YOUR challenge.","시간 관리 / 힘들다",null,"시간 관리가 제일 힘들어요. 회사 다니면서 준비하니까요."),
+            B("b2","ASK","Ask what keeps them motivated.","어떻게 / 힘내다","어떻게 힘내요?"),
+            B("b3","ECHO","They said 'I don't want to give up on what I love.' Confirm warmly.","멋있다 / 응원하다",null,"좋아하는 일이니까 포기하고 싶지 않아요."),
+            B("b4","BRIDGE","React with encouragement. Ask how they've been lately → Week 6.","요즘 / 어때요 / 스트레스")
+          ],
+          ref: [
+            {who:"partner",text:"시간 관리가 제일 힘들어요. 회사 다니면서 준비하니까요."},
+            {who:"you",text:"맞아요, 그게 제일 어렵죠. 어떻게 힘내요?"},
+            {who:"partner",text:"좋아하는 일이니까 포기하고 싶지 않아요."},
+            {who:"you",text:"멋있다! 응원할게요. 근데 요즘 어때요? 바쁘면 스트레스 많이 받죠?"}
+          ],
+          vocab: [{w:"시간 관리",m:"time management"},{w:"~(으)면서",m:"while doing"},{w:"포기하다",m:"give up"},{w:"응원하다",m:"cheer for → Week 6"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","Time management is hardest. React, share yours.","时间管理 shíjiān guǎnlǐ",null,"时间管理最难。一边上班一边准备，很累。","Shíjiān guǎnlǐ zuì nán. Yìbiān shàngbān yìbiān zhǔnbèi, hěn lèi."),
+            B("b2","ASK","Ask what keeps them going.","坚持 jiānchí / 怎么 zěnme","你怎么坚持的？"),
+            B("b3","ECHO","They won't give up on what they love. Confirm.","佩服 pèifú",null,"因为是自己喜欢的事，所以不想放弃。","Yīnwèi shì zìjǐ xǐhuan de shì, suǒyǐ bù xiǎng fàngqì."),
+            B("b4","BRIDGE","Encourage. Ask how they've been → Week 6.","最近 zuìjìn / 怎么样 / 压力 yālì")
+          ],
+          ref: [
+            {who:"partner",text:"时间管理最难。一边上班一边准备，很累。",py:"Shíjiān guǎnlǐ zuì nán. Yìbiān shàngbān yìbiān zhǔnbèi, hěn lèi."},
+            {who:"you",text:"我理解。你怎么坚持的？",py:"Wǒ lǐjiě. Nǐ zěnme jiānchí de?"},
+            {who:"partner",text:"因为是自己喜欢的事，所以不想放弃。",py:"Yīnwèi shì zìjǐ xǐhuan de shì, suǒyǐ bù xiǎng fàngqì."},
+            {who:"you",text:"真的很佩服你！对了，你最近怎么样？这么忙压力大吧？",py:"Zhēn de hěn pèifú nǐ! Duìle, nǐ zuìjìn zěnmeyàng? Zhème máng yālì dà ba?"}
+          ],
+          vocab: [{w:"一边...一边 yìbiān...yìbiān",m:"while doing"},{w:"放弃 fàngqì",m:"give up"},{w:"坚持 jiānchí",m:"persist"},{w:"佩服 pèifú",m:"admire → Week 6"}]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"꿈",m:"dream"},{p:"~을 위해서",m:"for the sake of"},{p:"~(으)면서",m:"while doing"},{p:"포기하다",m:"give up"},{p:"응원하다",m:"support"}],
+      zh:[{p:"梦想 mèngxiǎng",m:"dream"},{p:"为了 wèile",m:"for"},{p:"一边...一边",m:"while doing"},{p:"放弃 fàngqì",m:"give up"},{p:"坚持 jiānchí",m:"persist"}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 6: Feelings & Reflection
+     Reps: How are you? → Self-care → Full circle
+  ════════════════════════════════════════════ */
+  {
+    title: "Feelings",
+    task: "Chain from Week 5: You asked how they've been lately. Open up about feelings, stress relief, gratitude, and close the arc.",
+    isReview: false,
+    reps: [
+      makeRep(1, "How Are You Really?", "있다 · 有 yǒu",
+        "You asked how they've been. This is an emotional check-in.",
+        {
+          beats: [
+            B("b1","STMT","They asked '요즘 어때요?' Share honestly.","피곤하다 / 그래도",null,"요즘 어때요?"),
+            B("b2","ASK","Ask how they're handling everything.","기분 / 어떻다","[이름]씨는 요즘 기분이 어때요?"),
+            B("b3","ECHO","They said '좀 피곤하지만 괜찮아요.' Confirm.","맞아요",null,"좀 피곤하지만 괜찮아요. 좋아하는 일 하니까요."),
+            B("b4","BRIDGE","React empathetically. Ask what they do when stressed.","스트레스 / 풀다")
+          ],
+          ref: [
+            {who:"partner",text:"요즘 어때요?"},
+            {who:"you",text:"좀 바쁘지만 재미있어요. 새로운 거 배우고 있으니까요. [이름]씨는 요즘 기분이 어때요?"},
+            {who:"partner",text:"좀 피곤하지만 괜찮아요. 좋아하는 일 하니까요."},
+            {who:"you",text:"맞아요, 좋아하는 일이 있으면 힘이 되죠. 스트레스 받으면 어떻게 풀어요?"}
+          ],
+          vocab: [{w:"기분",m:"feeling / mood"},{w:"피곤하다",m:"tired"},{w:"힘이 되다",m:"gives strength"},{w:"스트레스 풀다",m:"relieve stress → Rep 2"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They asked '最近怎么样？' Share honestly.","最近 zuìjìn / 虽然...但是 suīrán...dànshì",null,"你最近怎么样？","Nǐ zuìjìn zěnmeyàng?"),
+            B("b2","ASK","Ask how they're doing emotionally.","心情 xīnqíng","你呢？心情怎么样？"),
+            B("b3","ECHO","They said '有点累，但还好。' Confirm.","说得对 shuō de duì",null,"有点累，但还好。做自己喜欢的事就不觉得辛苦。","Yǒudiǎn lèi, dàn hái hǎo. Zuò zìjǐ xǐhuan de shì jiù bù juéde xīnkǔ."),
+            B("b4","BRIDGE","React. Ask what they do to relax.","放松 fàngsōng / 压力大的时候")
+          ],
+          ref: [
+            {who:"partner",text:"你最近怎么样？",py:"Nǐ zuìjìn zěnmeyàng?"},
+            {who:"you",text:"挺忙的，但是很充实。在学新东西。你呢？心情怎么样？",py:"Tǐng máng de, dànshì hěn chōngshí. Zài xué xīn dōngxi. Nǐ ne? Xīnqíng zěnmeyàng?"},
+            {who:"partner",text:"有点累，但还好。做自己喜欢的事就不觉得辛苦。",py:"Yǒudiǎn lèi, dàn hái hǎo. Zuò zìjǐ xǐhuan de shì jiù bù juéde xīnkǔ."},
+            {who:"you",text:"说得对。压力大的时候你一般怎么放松？",py:"Shuō de duì. Yālì dà de shíhou nǐ yìbān zěnme fàngsōng?"}
+          ],
+          vocab: [{w:"心情 xīnqíng",m:"mood"},{w:"充实 chōngshí",m:"fulfilling"},{w:"辛苦 xīnkǔ",m:"hard / tiring"},{w:"放松 fàngsōng",m:"relax → Rep 2"}]
+        }
+      ),
+      makeRep(2, "Self-Care", "하다 · 做",
+        "You asked what they do when stressed. Music and walking come up.",
+        {
+          beats: [
+            B("b1","STMT","They listen to music or walk. React, share YOUR stress relief.","듣다 / 산책하다",null,"음악 듣거나 산책해요. 혼자 있는 시간이 필요해요."),
+            B("b2","ASK","Ask what music they listen to.","어떤 / 노래 / 가수","어떤 노래 들어요?"),
+            B("b3","ECHO","They said 'BTS, especially RM.' React! (This is your moment.)","RM / 통했다",null,"BTS 많이 들어요. 특히 RM 노래 좋아해요."),
+            B("b4","BRIDGE","React to RM with genuine excitement. Ask what they're grateful for.","감사하다 / 제일")
+          ],
+          ref: [
+            {who:"partner",text:"음악 듣거나 산책해요. 혼자 있는 시간이 필요해요."},
+            {who:"you",text:"저도 그래요! 어떤 노래 들어요?"},
+            {who:"partner",text:"BTS 많이 들어요. 특히 RM 노래 좋아해요."},
+            {who:"you",text:"RM이요?! 저도 RM 너무 좋아해요! 와, 통했다! 근데 요즘 제일 감사한 게 뭐예요?"}
+          ],
+          vocab: [{w:"듣거나",m:"listen or (거나 = or)"},{w:"산책",m:"walk / stroll"},{w:"혼자",m:"alone"},{w:"통했다",m:"we clicked!"},{w:"감사하다",m:"grateful → Rep 3"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They listen to music or walk. React, share yours.","听音乐 tīng yīnyuè / 散步 sànbù",null,"我会听音乐或者去散步。需要一个人待一会儿。","Wǒ huì tīng yīnyuè huòzhě qù sànbù. Xūyào yí ge rén dāi yíhuìr."),
+            B("b2","ASK","Ask what they listen to.","什么歌 shénme gē","你一般听什么歌？"),
+            B("b3","ECHO","They said '周杰伦. His songs are healing.' Confirm.","治愈 zhìyù",null,"我喜欢听周杰伦。他的歌很治愈。","Wǒ xǐhuan tīng Zhōu Jiélún. Tā de gē hěn zhìyù."),
+            B("b4","BRIDGE","React. Ask what makes them happiest lately.","最开心 zuì kāixīn / 最近")
+          ],
+          ref: [
+            {who:"partner",text:"我会听音乐或者去散步。",py:"Wǒ huì tīng yīnyuè huòzhě qù sànbù."},
+            {who:"you",text:"我也是！你一般听什么歌？",py:"Wǒ yě shì! Nǐ yìbān tīng shénme gē?"},
+            {who:"partner",text:"我喜欢听周杰伦。他的歌很治愈。",py:"Wǒ xǐhuan tīng Zhōu Jiélún. Tā de gē hěn zhìyù."},
+            {who:"you",text:"周杰伦的歌确实很治愈！对了，你最近最开心的事是什么？",py:"Zhōu Jiélún de gē quèshí hěn zhìyù! Duìle, nǐ zuìjìn zuì kāixīn de shì shì shénme?"}
+          ],
+          vocab: [{w:"或者 huòzhě",m:"or"},{w:"散步 sànbù",m:"walk"},{w:"治愈 zhìyù",m:"healing"},{w:"确实 quèshí",m:"indeed → Rep 3"}]
+        }
+      ),
+      makeRep(3, "Full Circle", "좋아하다 · 喜欢",
+        "The conversation comes full circle. They reference the dinner plans from Week 3.",
+        {
+          beats: [
+            B("b1","STMT","They're grateful for having time to pursue dreams. Share what YOU'RE grateful for.","감사하다 / 있어서",null,"꿈을 위해서 준비할 수 있는 시간이 있어서 감사해요."),
+            B("b2","ASK","Ask what they look forward to most right now.","기대하다 / 제일","지금 제일 기대하는 거 뭐예요?"),
+            B("b3","ECHO","They said 'Our weekend plans!' — referencing Week 3. Confirm with warmth.","맞다 / 약속",null,"이번 주말 약속이요! 우리 같이 밥 먹기로 했잖아요."),
+            B("b4","BRIDGE","Close the arc. Express you enjoyed talking and look forward to meeting.","즐겁다 / 봐요")
+          ],
+          ref: [
+            {who:"partner",text:"꿈을 위해서 준비할 수 있는 시간이 있어서 감사해요."},
+            {who:"you",text:"맞아요. 저도 새로운 언어를 배울 수 있어서 감사해요. 지금 제일 기대하는 거 뭐예요?"},
+            {who:"partner",text:"이번 주말 약속이요! 우리 같이 밥 먹기로 했잖아요."},
+            {who:"you",text:"맞다! 토요일 6시! 오늘 이야기 진짜 즐거웠어요. 주말에 봐요!"}
+          ],
+          vocab: [{w:"기대하다",m:"look forward to"},{w:"약속",m:"plans / promise"},{w:"~기로 했잖아요",m:"we decided to, remember?"},{w:"즐거웠어요",m:"it was enjoyable"},{w:"주말에 봐요",m:"see you this weekend!"}]
+        },
+        {
+          beats: [
+            B("b1","STMT","They're grateful for time to pursue goals. Share yours.","感恩 gǎn'ēn / 时间 shíjiān",null,"我很感恩现在有时间去追求自己的梦想。","Wǒ hěn gǎn'ēn xiànzài yǒu shíjiān qù zhuīqiú zìjǐ de mèngxiǎng."),
+            B("b2","ASK","Ask what they look forward to.","期待 qīdài / 最 zuì","你现在最期待什么？"),
+            B("b3","ECHO","They reference the weekend plans from Week 3! Confirm.","对 duì / 约定 yuēdìng",null,"这个周末的约定！我们不是要一起去吃饭吗？","Zhège zhōumò de yuēdìng! Wǒmen bú shì yào yìqǐ qù chīfàn ma?"),
+            B("b4","BRIDGE","Close warmly. Full circle.","开心 kāixīn / 聊天 liáotiān / 见 jiàn")
+          ],
+          ref: [
+            {who:"partner",text:"我很感恩现在有时间去追求自己的梦想。",py:"Wǒ hěn gǎn'ēn xiànzài yǒu shíjiān qù zhuīqiú zìjǐ de mèngxiǎng."},
+            {who:"you",text:"我也是。能学新语言我很开心。你现在最期待什么？",py:"Wǒ yě shì. Néng xué xīn yǔyán wǒ hěn kāixīn. Nǐ xiànzài zuì qīdài shénme?"},
+            {who:"partner",text:"这个周末的约定！我们不是要一起去吃饭吗？",py:"Zhège zhōumò de yuēdìng! Wǒmen bú shì yào yìqǐ qù chīfàn ma?"},
+            {who:"you",text:"对！星期六六点！今天聊得很开心。周末见！",py:"Duì! Xīngqīliù liù diǎn! Jīntiān liáo de hěn kāixīn. Zhōumò jiàn!"}
+          ],
+          vocab: [{w:"感恩 gǎn'ēn",m:"grateful"},{w:"追求 zhuīqiú",m:"pursue"},{w:"期待 qīdài",m:"look forward to"},{w:"约定 yuēdìng",m:"plans / agreement"},{w:"周末见 zhōumò jiàn",m:"see you this weekend!"}]
+        }
+      )
+    ],
+    bridges: {
+      kr:[{p:"기분",m:"mood"},{p:"스트레스 받다/풀다",m:"get/relieve stress"},{p:"~거나",m:"or"},{p:"통했다",m:"we clicked!"},{p:"감사하다",m:"grateful"},{p:"기대하다",m:"look forward to"}],
+      zh:[{p:"心情 xīnqíng",m:"mood"},{p:"压力 yālì",m:"stress"},{p:"放松 fàngsōng",m:"relax"},{p:"或者 huòzhě",m:"or"},{p:"治愈 zhìyù",m:"healing"},{p:"期待 qīdài",m:"look forward to"}]
+    }
+  },
+
+  /* ═══════════════════════════════════════════
+     WEEK 7: Full Review
+     No new content — chain all 6 weeks from memory.
+  ════════════════════════════════════════════ */
+  {
+    title: "Review",
+    task: "Full recall — chain all 6 weeks as one continuous conversation. No peeking at references. This is your complete arc from strangers → friends.",
+    isReview: true,
+    reps: [], /* empty — review uses chain visualization instead */
+    bridges: { kr: [], zh: [] }
+  }
+];
+
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+   These variables track what the user currently has selected.
+   All render functions read from these.
+═══════════════════════════════════════════════════════════════ */
+let currentWeek  = 1;       // which week is active (1–7)
+let currentLang  = 'both';  // 'korean', 'chinese', or 'both'
+let currentVerb  = 'be';    // key into verbs object
+let currentTense = 0;       // index into verb.tenses (0/1/2)
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER FUNCTIONS — DRILL TAB
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * renderBeats(beats, langKey)
+ * Builds the HTML for one language column of a rep's beats.
+ * Returns empty string if this language isn't currently selected.
+ */
+function renderBeats(beats, langKey) {
+  if (currentLang !== 'both' && currentLang !== langKey) return '';
+  const label = langKey === 'korean' ? '한국어 · Korean' : '中文 · Chinese';
+  const br = langKey === 'korean' && currentLang === 'both' ? ' border-right' : '';
+
+  return `<div class="lang-block${br}">
+    <div class="lang-label">${label}</div>
+    ${beats.map(b => {
+      let html = `<div class="beat-row">
+        <div class="beat-tag ${b.type}">${b.label}</div>
+        <div>
+          <div class="beat-prompt">${b.prompt}</div>`;
+
+      /* Show partner response if present (usually at STMT or ECHO beats) */
+      if (b.partner) {
+        html += `<div class="beat-partner">${b.partner}${
+          b.partnerPy ? `<span class="pinyin">${b.partnerPy}</span>` : ''
+        }</div>`;
+      }
+
+      html += `<div class="beat-hint">hint: ${b.hint}</div>`;
+      if (b.structure) html += `<div class="beat-structure">${b.structure}</div>`;
+      html += `<div class="production-line">your production ...</div>`;
+      html += `</div></div>`;
+      return html;
+    }).join('')}
+  </div>`;
+}
+
+/**
+ * renderRef(rep)
+ * Builds the collapsible reference conversation + key vocab
+ * for one rep. Respects currentLang to show KR, ZH, or both.
+ */
+function renderRef(rep) {
+  const showKr = currentLang === 'both' || currentLang === 'korean';
+  const showZh = currentLang === 'both' || currentLang === 'chinese';
+  const brClass = showKr && showZh ? ' border-right' : '';
+
+  let html = `<details class="ref-toggle"><summary>Show Reference Conversation</summary><div class="ref-content">`;
+
+  if (showKr) {
+    html += `<div class="ref-lang${brClass}">`;
+    rep.kr.ref.forEach(r => {
+      html += `<div class="ref-line${r.who === 'partner' ? ' partner' : ''}">${r.who === 'partner' ? '↳ ' : ''} ${r.text}</div>`;
+    });
+    html += `<div class="ref-vocab"><div class="ref-vocab-title">Key Vocab</div>`;
+    rep.kr.vocab.forEach(v => {
+      html += `<div class="ref-vocab-item"><span class="word">${v.w}</span> <span class="meaning">— ${v.m}</span></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (showZh) {
+    html += `<div class="ref-lang">`;
+    rep.zh.ref.forEach(r => {
+      html += `<div class="ref-line${r.who === 'partner' ? ' partner' : ''}">${r.who === 'partner' ? '↳ ' : ''} ${r.text}${r.py ? ` <span class="pinyin">${r.py}</span>` : ''}</div>`;
+    });
+    html += `<div class="ref-vocab"><div class="ref-vocab-title">Key Vocab</div>`;
+    rep.zh.vocab.forEach(v => {
+      html += `<div class="ref-vocab-item"><span class="word">${v.w}</span> <span class="meaning">— ${v.m}</span></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  html += `</div></details>`;
+  return html;
+}
+
+/**
+ * renderBridges(week)
+ * Builds the bridge patterns card at the bottom of a week.
+ */
+function renderBridges(week) {
+  if (!week.bridges.kr.length && !week.bridges.zh.length) return '';
+  const showKr = currentLang === 'both' || currentLang === 'korean';
+  const showZh = currentLang === 'both' || currentLang === 'chinese';
+  const brClass = showKr && showZh ? ' border-right' : '';
+
+  let html = `<div class="bridge-card"><div class="bridge-header">BRIDGE PATTERNS</div><div class="bridge-body">`;
+  if (showKr) {
+    html += `<div class="bridge-col${brClass}"><div class="bridge-col-title">Korean</div>`;
+    week.bridges.kr.forEach(b => html += `<div class="bridge-item"><span class="pattern">${b.p}</span> <span class="meaning">— ${b.m}</span></div>`);
+    html += `</div>`;
+  }
+  if (showZh) {
+    html += `<div class="bridge-col"><div class="bridge-col-title">Mandarin</div>`;
+    week.bridges.zh.forEach(b => html += `<div class="bridge-item"><span class="pattern">${b.p}</span> <span class="meaning">— ${b.m}</span></div>`);
+    html += `</div>`;
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+/**
+ * renderWeek(weekData)
+ * Builds the full HTML for a content week (reps + bridges).
+ */
+function renderWeek(weekData) {
+  let html = '';
+  weekData.reps.forEach((rep, i) => {
+    html += `<div class="rep-card">
+      <div class="rep-header">
+        <div class="rep-header-left">
+          <div class="rep-num">${rep.num}</div>
+          <div class="rep-title">${rep.title}</div>
+        </div>
+        <div class="rep-verb">${rep.verb}</div>
+      </div>
+      <div class="scenario">${rep.scenario}</div>
+      <div class="rep-body">
+        ${renderBeats(rep.kr.beats, 'korean')}
+        ${renderBeats(rep.zh.beats, 'chinese')}
+      </div>
+      ${renderRef(rep)}
+    </div>`;
+    /* Chain arrow between reps (not after last) */
+    if (i < weekData.reps.length - 1) {
+      html += `<div class="chain-arrow">↓</div>`;
+    }
+  });
+  html += renderBridges(weekData);
+  return html;
+}
+
+/**
+ * renderReviewWeek()
+ * Builds the Week 7 review view with banner + chain visualization.
+ */
+function renderReviewWeek() {
+  /* Build the full chain text from all weeks */
+  const chainLines = [];
+  weeks.forEach((wk, wi) => {
+    if (wk.isReview || !wk.reps.length) return;
+    wk.reps.forEach(rep => {
+      const lastKrRef = rep.kr.ref[rep.kr.ref.length - 1];
+      const lastZhRef = rep.zh.ref[rep.zh.ref.length - 1];
+      const krLine = lastKrRef.who === 'you' ? lastKrRef.text : '';
+      const zhLine = lastZhRef.who === 'you' ? lastZhRef.text : '';
+      const pyLine = lastZhRef.py || '';
+
+      let display = '';
+      if (currentLang !== 'chinese' && krLine) display += krLine;
+      if (currentLang === 'both' && krLine && zhLine) display += '\n';
+      if (currentLang !== 'korean' && zhLine) display += zhLine + (pyLine ? ` [${pyLine}]` : '');
+
+      chainLines.push({
+        label: `W${wi + 1} R${rep.num}`,
+        title: rep.title,
+        text: display
+      });
+    });
+  });
+
+  let html = `<div class="review-banner">
+    <div class="review-icon">🔁</div>
+    <div>
+      <div class="review-banner-title">FULL REVIEW — No peeking</div>
+      <div class="review-banner-text">Chain all 6 weeks as one continuous conversation. Work through each rep in order — produce all 4 beats aloud before moving on. Goal: the complete arc from strangers → friends without hesitation.</div>
+    </div>
+  </div>`;
+
+  html += `<div class="chain-card">
+    <div class="chain-card-header">FULL CHAIN — 18 REPS</div>
+    <div class="chain-card-body">`;
+
+  chainLines.forEach((line, i) => {
+    html += `<span class="wk-label">${line.label}</span> ${line.title}\n${line.text}\n`;
+    if (i < chainLines.length - 1) html += `  ↓\n`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   EVENT HANDLERS — DRILL TAB
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * setWeek(w)
+ * Called when a week button is clicked.
+ * Updates state, re-styles task bar, renders content.
+ */
+function setWeek(w) {
+  currentWeek = w;
+  const week = weeks[w - 1];
+
+  /* Update active state on week buttons */
+  document.querySelectorAll('.week-btn').forEach((b, i) => {
+    b.classList.toggle('active', i + 1 === w);
+  });
+
+  /* Update task bar */
+  const tb = document.getElementById('task-bar-el');
+  const tl = document.getElementById('task-label');
+  if (week.isReview) {
+    tb.className = 'task-bar review';
+    tl.className = 'task-label review';
+    tl.textContent = `Week ${w} · REVIEW`;
+  } else {
+    tb.className = 'task-bar normal';
+    tl.className = 'task-label normal';
+    tl.textContent = `Week ${w} · ${week.title}`;
+  }
+  document.getElementById('task-text').textContent = week.task;
+
+  /* Render content */
+  const container = document.getElementById('drill-container');
+  if (week.isReview) {
+    container.innerHTML = renderReviewWeek();
+  } else {
+    container.innerHTML = renderWeek(week);
+  }
+
+  /* Update progress bar */
+  document.getElementById('progress-fill').style.width = `${(w / 7) * 100}%`;
+  document.getElementById('progress-pct').textContent = `${w}/7`;
+}
+
+/**
+ * setLang(l)
+ * Called when a language toggle button is clicked.
+ */
+function setLang(l) {
+  currentLang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    const map = { '한국어': 'korean', 'Both': 'both', '中文': 'chinese' };
+    b.classList.toggle('active', map[b.textContent] === l);
+  });
+  /* Re-render whichever tab is visible */
+  if (!document.getElementById('tab-drill').classList.contains('hidden')) {
+    setWeek(currentWeek);
+  } else {
+    renderSeedCard();
+    renderVocabStrip();
+  }
+}
+
+/**
+ * setTab(t)
+ * Switches between drill and seeds tabs.
+ */
+function setTab(t) {
+  document.getElementById('tab-drill').classList.toggle('hidden', t !== 'drill');
+  document.getElementById('tab-seeds').classList.toggle('hidden', t !== 'seeds');
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+    b.classList.toggle('active', (i === 0 && t === 'drill') || (i === 1 && t === 'seeds'))
+  );
+  if (t === 'seeds') { renderSeedCard(); renderVocabStrip(); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VERB SEEDS TAB — DATA + RENDER
+   (Preserved from original — this is the conjugation reference
+   tool, separate from the conversation drills.)
+═══════════════════════════════════════════════════════════════ */
+const verbOrder = ['be','have','go','do','come','want','like','eat','see','know','speak','live'];
+
+const verbs = {
+  be:{kr:"이다",zh:"是",vocab:{kr:["학생","선생님","친구","의사","작가","디자이너","엔지니어","요리사"],zh:["学生","老师","朋友","医生","作家","设计师","工程师","厨师"]},noteKR:"[subject]는/은 [noun]이에요/예요 — 이에요 after consonant, 예요 after vowel",noteZH:"[subject]是[noun] — 是 never changes; tense via 以前/以后",tenses:[{label:"Present",kr:[["S","저는 학생이에요","[명사]이에요/예요"],["Y/N","학생이에요?","[명사]이에요?"],["Q","뭐예요? / 누구예요?","open"]],zh:[["S","我是学生","我是[名词]"],["Y/N","你是学生吗？","你是[名词]吗？"],["Q","你是什么？/ 你是谁？","open"]]},{label:"Past",kr:[["S","저는 학생이었어요","[명사]이었어요/였어요"],["Y/N","학생이었어요?","[명사]이었어요?"],["Q","뭐였어요?","open"]],zh:[["S","我以前是学生","我以前是[名词]"],["Y/N","你以前是学生吗？","你以前是[名词]吗？"],["Q","你以前是什么？","open"]]},{label:"Future",kr:[["S","저는 선생님일 거예요","[명사]일 거예요"],["Y/N","선생님일 거예요?","[명사]일 거예요?"],["Q","뭐일 거예요?","open"]],zh:[["S","我以后会是老师","我会是[名词]"],["Y/N","你会是老师吗？","你会是[名词]吗？"],["Q","你以后会是什么？","open"]]}]},
+  have:{kr:"있다",zh:"有",vocab:{kr:["시간","돈","친구","가족","취미","꿈","계획","질문"],zh:["时间","钱","朋友","家人","爱好","梦想","计划","问题"]},noteKR:"[noun]이/가 있어요 — negation: 없어요",noteZH:"有 never conjugates — negation: 没有",tenses:[{label:"Present",kr:[["S","시간이 있어요","[명사]이/가 있어요"],["Y/N","시간이 있어요?","있어요?"],["Q","뭐가 있어요?","open"]],zh:[["S","我有时间","我有[名词]"],["Y/N","你有时间吗？","有吗？"],["Q","你有什么？","open"]]},{label:"Past",kr:[["S","시간이 있었어요","있었어요"],["Y/N","있었어요?","있었어요?"],["Q","뭐가 있었어요?","open"]],zh:[["S","我以前有时间","以前有"],["Y/N","以前有吗？","以前有吗？"],["Q","以前有什么？","open"]]},{label:"Future",kr:[["S","시간이 있을 거예요","있을 거예요"],["Y/N","있을 거예요?","있을 거예요?"],["Q","뭐가 있을 거예요?","open"]],zh:[["S","我以后会有时间","会有"],["Y/N","会有吗？","会有吗？"],["Q","会有什么？","open"]]}]},
+  go:{kr:"가다",zh:"去",vocab:{kr:["학교","집","회사","카페","병원","공원","도서관","한국"],zh:["学校","家","公司","咖啡店","医院","公园","图书馆","韩国"]},noteKR:"[place]에 가요 — 에 marks destination",noteZH:"去[place] — 了 completion; 要 intention",tenses:[{label:"Present",kr:[["S","학교에 가요","[장소]에 가요"],["Y/N","학교에 가요?","가요?"],["Q","어디에 가요?","open"]],zh:[["S","我去学校","去[地方]"],["Y/N","去学校吗？","去吗？"],["Q","你去哪里？","open"]]},{label:"Past",kr:[["S","학교에 갔어요","갔어요"],["Y/N","갔어요?","갔어요?"],["Q","어디에 갔어요?","open"]],zh:[["S","我去了学校","去了"],["Y/N","去了吗？","去了吗？"],["Q","去哪里了？","open"]]},{label:"Future",kr:[["S","학교에 갈 거예요","갈 거예요"],["Y/N","갈 거예요?","갈 거예요?"],["Q","어디에 갈 거예요?","open"]],zh:[["S","我要去学校","要去"],["Y/N","要去吗？","要去吗？"],["Q","要去哪里？","open"]]}]},
+  do:{kr:"하다",zh:"做",vocab:{kr:["숙제","요리","운동","공부","청소","쇼핑","여행","일"],zh:["作业","饭","运动","学习","打扫","购物","旅行","工作"]},noteKR:"하다 attaches to nouns (운동하다) — 해요 present, 했어요 past",noteZH:"做 for activities — 了 completion, 要 upcoming",tenses:[{label:"Present",kr:[["S","운동을 해요","해요"],["Y/N","해요?","해요?"],["Q","뭘 해요?","open"]],zh:[["S","我做运动","做[活动]"],["Y/N","做吗？","做吗？"],["Q","做什么？","open"]]},{label:"Past",kr:[["S","운동을 했어요","했어요"],["Y/N","했어요?","했어요?"],["Q","뭘 했어요?","open"]],zh:[["S","我做了运动","做了"],["Y/N","做了吗？","做了吗？"],["Q","做了什么？","open"]]},{label:"Future",kr:[["S","운동을 할 거예요","할 거예요"],["Y/N","할 거예요?","할 거예요?"],["Q","뭘 할 거예요?","open"]],zh:[["S","我要做运动","要做"],["Y/N","要做吗？","要做吗？"],["Q","要做什么？","open"]]}]},
+  come:{kr:"오다",zh:"来",vocab:{kr:["학교","집","회사","여기","파티","한국","공항","미국"],zh:["学校","家","公司","这里","派对","韩国","机场","美国"]},noteKR:"[place]에 와요 — motion toward speaker",noteZH:"来[place] — opposite of 去",tenses:[{label:"Present",kr:[["S","학교에 와요","와요"],["Y/N","와요?","와요?"],["Q","어디에 와요?","open"]],zh:[["S","我来学校","来"],["Y/N","来吗？","来吗？"],["Q","来哪里？","open"]]},{label:"Past",kr:[["S","학교에 왔어요","왔어요"],["Y/N","왔어요?","왔어요?"],["Q","어디에 왔어요?","open"]],zh:[["S","我来了学校","来了"],["Y/N","来了吗？","来了吗？"],["Q","来了哪里？","open"]]},{label:"Future",kr:[["S","학교에 올 거예요","올 거예요"],["Y/N","올 거예요?","올 거예요?"],["Q","어디에 올 거예요?","open"]],zh:[["S","我要来学校","要来"],["Y/N","要来吗？","要来吗？"],["Q","要来哪里？","open"]]}]},
+  want:{kr:"원하다",zh:"想",vocab:{kr:["커피","물","음식","도움","시간","친구","정보","변화"],zh:["咖啡","水","食物","帮助","时间","朋友","信息","改变"]},noteKR:"[noun]을/를 원해요 — for verbs: ~고 싶어요",noteZH:"想[verb/noun] — both 'want' and 'think/miss'",tenses:[{label:"Present",kr:[["S","커피를 원해요","원해요"],["Y/N","원해요?","원해요?"],["Q","뭘 원해요?","open"]],zh:[["S","我想要咖啡","想要"],["Y/N","想要吗？","想要吗？"],["Q","想要什么？","open"]]},{label:"Past",kr:[["S","커피를 원했어요","원했어요"],["Y/N","원했어요?","원했어요?"],["Q","뭘 원했어요?","open"]],zh:[["S","我以前想要咖啡","以前想要"],["Y/N","以前想要吗？","以前想要吗？"],["Q","以前想要什么？","open"]]},{label:"Future",kr:[["S","커피를 원할 거예요","원할 거예요"],["Y/N","원할 거예요?","원할 거예요?"],["Q","뭘 원할 거예요?","open"]],zh:[["S","我以后会想要咖啡","会想要"],["Y/N","会想要吗？","会想要吗？"],["Q","会想要什么？","open"]]}]},
+  like:{kr:"좋아하다",zh:"喜欢",vocab:{kr:["음악","영화","요리","게임","독서","여행","운동","자연"],zh:["音乐","电影","做饭","游戏","读书","旅行","运动","自然"]},noteKR:"[noun]을/를 좋아해요 — vs 좋다 (to be good)",noteZH:"喜欢[noun/verb] — takes noun or verb directly",tenses:[{label:"Present",kr:[["S","음악을 좋아해요","좋아해요"],["Y/N","좋아해요?","좋아해요?"],["Q","뭘 좋아해요?","open"]],zh:[["S","我喜欢音乐","喜欢"],["Y/N","喜欢吗？","喜欢吗？"],["Q","喜欢什么？","open"]]},{label:"Past",kr:[["S","음악을 좋아했어요","좋아했어요"],["Y/N","좋아했어요?","좋아했어요?"],["Q","뭘 좋아했어요?","open"]],zh:[["S","我以前喜欢音乐","以前喜欢"],["Y/N","以前喜欢吗？","以前喜欢吗？"],["Q","以前喜欢什么？","open"]]},{label:"Future",kr:[["S","음악을 좋아할 거예요","좋아할 거예요"],["Y/N","좋아할 거예요?","좋아할 거예요?"],["Q","뭘 좋아할 거예요?","open"]],zh:[["S","我会喜欢音乐","会喜欢"],["Y/N","会喜欢吗？","会喜欢吗？"],["Q","会喜欢什么？","open"]]}]},
+  eat:{kr:"먹다",zh:"吃",vocab:{kr:["밥","김치","라면","빵","과일","고기","떡볶이","샐러드"],zh:["米饭","泡菜","拉面","面包","水果","肉","炒年糕","沙拉"]},noteKR:"[food]을/를 먹어요 — honorific: 드세요",noteZH:"吃[food] — 吃饭 = have a meal",tenses:[{label:"Present",kr:[["S","밥을 먹어요","먹어요"],["Y/N","먹어요?","먹어요?"],["Q","뭘 먹어요?","open"]],zh:[["S","我吃米饭","吃"],["Y/N","吃吗？","吃吗？"],["Q","吃什么？","open"]]},{label:"Past",kr:[["S","밥을 먹었어요","먹었어요"],["Y/N","먹었어요?","먹었어요?"],["Q","뭘 먹었어요?","open"]],zh:[["S","我吃了米饭","吃了"],["Y/N","吃了吗？","吃了吗？"],["Q","吃了什么？","open"]]},{label:"Future",kr:[["S","밥을 먹을 거예요","먹을 거예요"],["Y/N","먹을 거예요?","먹을 거예요?"],["Q","뭘 먹을 거예요?","open"]],zh:[["S","我要吃米饭","要吃"],["Y/N","要吃吗？","要吃吗？"],["Q","要吃什么？","open"]]}]},
+  see:{kr:"보다",zh:"看",vocab:{kr:["영화","드라마","뉴스","책","사진","전시회","경기","친구"],zh:["电影","剧","新闻","书","照片","展览","比赛","朋友"]},noteKR:"[obj]을/를 봐요 — covers see, watch, look",noteZH:"看[obj] — covers see, watch, read",tenses:[{label:"Present",kr:[["S","영화를 봐요","봐요"],["Y/N","봐요?","봐요?"],["Q","뭘 봐요?","open"]],zh:[["S","我看电影","看"],["Y/N","看吗？","看吗？"],["Q","看什么？","open"]]},{label:"Past",kr:[["S","영화를 봤어요","봤어요"],["Y/N","봤어요?","봤어요?"],["Q","뭘 봤어요?","open"]],zh:[["S","我看了电影","看了"],["Y/N","看了吗？","看了吗？"],["Q","看了什么？","open"]]},{label:"Future",kr:[["S","영화를 볼 거예요","볼 거예요"],["Y/N","볼 거예요?","볼 거예요?"],["Q","뭘 볼 거예요?","open"]],zh:[["S","我要看电影","要看"],["Y/N","要看吗？","要看吗？"],["Q","要看什么？","open"]]}]},
+  know:{kr:"알다",zh:"知道",vocab:{kr:["이름","주소","방법","이유","사람","언어","답","장소"],zh:["名字","地址","方法","原因","人","语言","答案","地方"]},noteKR:"알아요 — irregular; negation: 몰라요",noteZH:"知道 — negation: 不知道; 认识 for people",tenses:[{label:"Present",kr:[["S","이름을 알아요","알아요"],["Y/N","알아요?","알아요?"],["Q","뭘 알아요?","open"]],zh:[["S","我知道名字","知道"],["Y/N","知道吗？","知道吗？"],["Q","知道什么？","open"]]},{label:"Past",kr:[["S","이름을 알았어요","알았어요"],["Y/N","알았어요?","알았어요?"],["Q","뭘 알았어요?","open"]],zh:[["S","我知道了名字","知道了"],["Y/N","知道了吗？","知道了吗？"],["Q","知道了什么？","open"]]},{label:"Future",kr:[["S","이름을 알 거예요","알 거예요"],["Y/N","알 거예요?","알 거예요?"],["Q","뭘 알 거예요?","open"]],zh:[["S","我会知道名字","会知道"],["Y/N","会知道吗？","会知道吗？"],["Q","会知道什么？","open"]]}]},
+  speak:{kr:"말하다",zh:"说",vocab:{kr:["한국어","중국어","영어","진실","거짓말","이야기","생각","비밀"],zh:["韩语","中文","英语","实话","谎话","故事","想法","秘密"]},noteKR:"[lang]로 말해요 — 이야기하다 for conversation",noteZH:"说[lang/obj] — 讲 is more formal",tenses:[{label:"Present",kr:[["S","한국어로 말해요","말해요"],["Y/N","말해요?","말해요?"],["Q","어떻게 말해요?","open"]],zh:[["S","我说韩语","说"],["Y/N","说吗？","说吗？"],["Q","说什么语言？","open"]]},{label:"Past",kr:[["S","한국어로 말했어요","말했어요"],["Y/N","말했어요?","말했어요?"],["Q","어떻게 말했어요?","open"]],zh:[["S","我说了韩语","说了"],["Y/N","说了吗？","说了吗？"],["Q","说了什么？","open"]]},{label:"Future",kr:[["S","한국어로 말할 거예요","말할 거예요"],["Y/N","말할 거예요?","말할 거예요?"],["Q","어떻게 말할 거예요?","open"]],zh:[["S","我要说韩语","要说"],["Y/N","要说吗？","要说吗？"],["Q","要说什么？","open"]]}]},
+  live:{kr:"살다",zh:"住",vocab:{kr:["서울","한국","미국","도미니카","아파트","도시","시골","혼자"],zh:["首尔","韩国","美国","多米尼克","公寓","城市","农村","一个人"]},noteKR:"[place]에 살아요 — ㄹ irregular",noteZH:"住在[place] — 住 requires 在",tenses:[{label:"Present",kr:[["S","서울에 살아요","살아요"],["Y/N","살아요?","살아요?"],["Q","어디에 살아요?","open"]],zh:[["S","我住在首尔","住在"],["Y/N","住在吗？","住在吗？"],["Q","住在哪里？","open"]]},{label:"Past",kr:[["S","서울에 살았어요","살았어요"],["Y/N","살았어요?","살았어요?"],["Q","어디에 살았어요?","open"]],zh:[["S","我以前住在首尔","以前住在"],["Y/N","以前住在吗？","以前住在吗？"],["Q","以前住在哪里？","open"]]},{label:"Future",kr:[["S","서울에 살 거예요","살 거예요"],["Y/N","살 거예요?","살 거예요?"],["Q","어디에 살 거예요?","open"]],zh:[["S","我要住在首尔","要住在"],["Y/N","要住在吗？","要住在吗？"],["Q","要住在哪里？","open"]]}]}
+};
+
+
+/* ─────────────────────────────────────────────
+   VERB SEEDS RENDER FUNCTIONS
+───────────────────────────────────────────── */
+
+/** Cup type → CSS class */
+function tagClass(t) { return t === 'S' ? 's' : t === 'Y/N' ? 'yn' : 'q'; }
+
+/** Single cup row for verb seeds */
+function renderCupRow(row) {
+  return `<div class="cup-row">
+    <div class="cup-tag ${tagClass(row[0])}">${row[0]}</div>
+    <div>
+      <div class="cup-main">${row[1]}</div>
+      <div class="cup-note">${row[2]}</div>
+    </div>
+  </div>`;
+}
+
+/** Language block for verb seeds (respects currentLang) */
+function renderSeedLangBlock(label, rows, borderRight, langKey) {
+  if (currentLang !== 'both' && currentLang !== langKey) return '';
+  return `<div class="lang-block${borderRight && currentLang === 'both' ? ' border-right' : ''}">
+    <div class="lang-label">${label}</div>
+    ${rows.map(r => renderCupRow(r)).join('')}
+  </div>`;
+}
+
+/** Vocab word tiles */
+function renderVocabStrip() {
+  const v = verbs[currentVerb];
+  let w = '';
+  for (let i = 0; i < v.vocab.kr.length; i++) {
+    w += `<div class="vocab-word">`;
+    if (currentLang !== 'chinese') w += `<span class="vocab-kr">${v.vocab.kr[i]}</span>`;
+    if (currentLang !== 'korean')  w += `<span class="vocab-zh">${v.vocab.zh[i]}</span>`;
+    w += `</div>`;
+  }
+  document.getElementById('vocab-header').innerHTML = `
+    <div class="vocab-header">
+      <div class="vocab-label">Vocab</div>
+      <div class="vocab-hint">swap any into the cups below</div>
+    </div>`;
+  document.getElementById('vocab-strip').innerHTML = w;
+}
+
+/** Seed card + grammar notes */
+function renderSeedCard() {
+  const v = verbs[currentVerb];
+  const t = v.tenses[currentTense];
+  const label = currentLang === 'both' ? `${v.kr} / ${v.zh}`
+              : currentLang === 'korean' ? v.kr : v.zh;
+
+  document.getElementById('seed-card').innerHTML = `
+    <div class="set-card">
+      <div class="set-header">
+        <div class="set-title" style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-style:normal;font-family:monospace;">${label} — ${t.label}</div>
+      </div>
+      <div class="set-body">
+        ${renderSeedLangBlock('한국어 · Korean', t.kr, true, 'korean')}
+        ${renderSeedLangBlock('中文 · Chinese', t.zh, false, 'chinese')}
+      </div>
+    </div>`;
+
+  let n = '';
+  if (currentLang !== 'chinese') {
+    n += `<div class="struct-note-row"><span class="struct-lang-tag kr">KR</span><span class="struct-note-text">${v.noteKR}</span></div>`;
+  }
+  if (currentLang !== 'korean') {
+    n += `<div class="struct-note-row"><span class="struct-lang-tag zh">ZH</span><span class="struct-note-text">${v.noteZH}</span></div>`;
+  }
+  document.getElementById('struct-note').innerHTML = n;
+}
+
+
+/* ─────────────────────────────────────────────
+   VERB SEEDS EVENT HANDLERS
+───────────────────────────────────────────── */
+function setVerb(id) {
+  currentVerb = id;
+  currentTense = 0;
+  document.querySelectorAll('.verb-btn').forEach((b, i) =>
+    b.classList.toggle('active', verbOrder[i] === id)
+  );
+  document.querySelectorAll('.tense-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === 0)
+  );
+  renderSeedCard();
+  renderVocabStrip();
+}
+
+function setTense(i) {
+  currentTense = i;
+  document.querySelectorAll('.tense-btn').forEach((b, j) =>
+    b.classList.toggle('active', j === i)
+  );
+  renderSeedCard();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   INITIALIZATION
+   Build dynamic UI elements and render the first week.
+═══════════════════════════════════════════════════════════════ */
+
+/* Build week selector strip */
+document.getElementById('week-strip').innerHTML = weeks.map((wk, i) => {
+  const num = i + 1;
+  const reviewClass = wk.isReview ? ' review-week' : '';
+  const activeClass = num === 1 ? ' active' : '';
+  return `<button class="week-btn${reviewClass}${activeClass}" onclick="setWeek(${num})">
+    <span class="wk-num">Week ${num}</span>
+    <span class="wk-focus">${wk.title}</span>
+    ${wk.isReview ? '<span class="review-badge">REVIEW</span>' : ''}
+  </button>`;
+}).join('');
+
+/* Build verb seed buttons */
+document.getElementById('verb-buttons').innerHTML = verbOrder.map((k, i) => {
+  const v = verbs[k];
+  return `<button class="verb-btn${i === 0 ? ' active' : ''}" onclick="setVerb('${k}')">
+    <span class="vb-chars">${v.kr} · ${v.zh}</span>
+    <span class="vb-eng">${k}</span>
+  </button>`;
+}).join('');
+
+/* Render Week 1 on page load */
+setWeek(1);
+</script>
+</body>
+</html>
