@@ -6,7 +6,7 @@ The core idea: fluency comes from having something to say, not from memorizing g
 
 The content is pitched at beginners — someone who can produce a few words but hasn't yet learned how to hold a conversation. That said, the structure itself isn't beginner-only. Intermediate and advanced learners can swap in more complex vocabulary, extend the beat prompts, or build entirely new weeks around topics that match where they are.
 
-A single HTML file. Open it in a browser.
+A single HTML file that opens in a browser.
 
 ---
 
